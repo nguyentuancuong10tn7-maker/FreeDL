@@ -323,7 +323,20 @@ button:hover {
 <div id="start">
   <input id="player" placeholder="Nhập tên của bạn">
   <br><br>
-  <button onclick="startGame()">Bắt đầu</button>
+  <p style="color:white; font-size:16px; margin-bottom:8px">Chọn độ khó:</p>
+  <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:15px">
+    <button onclick="selectDiff('easy')" id="btnEasy" style="background:#27ae60; font-size:14px; padding:12px 16px">
+      😊 Dễ<br><small>30s | Sai ít bất lợi</small>
+    </button>
+    <button onclick="selectDiff('medium')" id="btnMedium" style="background:#e67e22; font-size:14px; padding:12px 16px">
+      😐 Trung bình<br><small>20s | Bình thường</small>
+    </button>
+    <button onclick="selectDiff('hard')" id="btnHard" style="background:#c0392b; font-size:14px; padding:12px 16px">
+      💀 Try Hard<br><small>15s | Sai 1 = thua!</small>
+    </button>
+  </div>
+  <div id="diffDesc" style="color:white; font-size:13px; margin-bottom:10px; min-height:20px"></div>
+  <button onclick="startGame()" id="btnStart" style="background:#FFD700; color:#8B0000; font-size:16px; padding:12px 25px">Bắt đầu</button>
 </div>
 
 <!-- Màn hình quiz -->
@@ -344,66 +357,81 @@ button:hover {
 
 // ===== CÂU HỎI =====
 let questions=[
-  {q:"Phong trào Đông Du do ai lãnh đạo?",a:["Phan Bội Châu","Phan Châu Trinh","Nguyễn Ái Quốc","Trường Chinh"],c:0},
-  {q:"Phong trào Đông Du diễn ra chủ yếu ở nước nào?",a:["Trung Quốc","Nhật Bản","Pháp","Mỹ"],c:1},
-  {q:"Phan Châu Trinh hoạt động chủ yếu ở đâu?",a:["Nhật","Pháp","Trung Quốc","Nga"],c:1},
-  {q:"Nguyễn Ái Quốc gửi Bản yêu sách của nhân dân An Nam năm nào?",a:["1918","1919","1920","1921"],c:1},
-  {q:"Nguyễn Ái Quốc đọc Luận cương của Lênin năm nào?",a:["1919","1920","1921","1922"],c:1},
-  {q:"Đảng Cộng sản Pháp được Nguyễn Ái Quốc tham gia sáng lập năm nào?",a:["1919","1920","1921","1922"],c:1},
-  {q:"Nguyễn Ái Quốc đến Liên Xô năm nào?",a:["1922","1923","1924","1925"],c:1},
-  {q:"Hội Việt Nam Cách mạng Thanh niên thành lập năm?",a:["1923","1924","1925","1926"],c:2},
-  {q:"Nguyễn Ái Quốc về nước năm nào?",a:["1940","1941","1942","1943"],c:1},
-  {q:"Cách mạng tháng Tám thành công năm?",a:["1943","1944","1945","1946"],c:2},
-  {q:"Hiệp định Sơ bộ Việt - Pháp ký ngày?",a:["6/3/1946","2/9/1945","19/12/1946","7/5/1954"],c:0},
-  {q:"Hiệp định Genève ký năm?",a:["1953","1954","1955","1956"],c:1},
-  {q:"Hiệp định Paris ký năm?",a:["1971","1972","1973","1974"],c:2},
-  {q:"Việt Nam gia nhập Liên Hợp Quốc năm?",a:["1975","1976","1977","1978"],c:2},
-  {q:"Việt Nam gia nhập ASEAN năm?",a:["1993","1994","1995","1996"],c:2},
-  {q:"Nguyễn Ái Quốc rời Bến Nhà Rồng năm?",a:["1910","1911","1912","1913"],c:1},
-  {q:"Tên thật của Hồ Chí Minh là?",a:["Nguyễn Sinh Cung","Nguyễn Ái Quốc","Nguyễn Tất Thành","Hồ Chí Minh"],c:0},
-  {q:"Hồ Chí Minh sinh năm?",a:["1889","1890","1891","1892"],c:1},
-  {q:"Hồ Chí Minh đọc Tuyên ngôn độc lập ngày?",a:["1/9/1945","2/9/1945","3/9/1945","4/9/1945"],c:1},
-  {q:"Việt Minh thành lập năm?",a:["1940","1941","1942","1943"],c:1},
-  {q:"Nguyễn Ái Quốc hoạt động ở Quảng Châu năm?",a:["1923","1924","1925","1926"],c:2},
-  {q:"Việt Nam Quang phục hội thành lập năm?",a:["1910","1911","1912","1913"],c:2},
-  {q:"Phong trào Đông Du kết thúc năm?",a:["1907","1908","1909","1910"],c:1},
-  {q:"Phan Châu Trinh sang Pháp năm?",a:["1910","1911","1912","1913"],c:1},
-  {q:"Nguyễn Ái Quốc đọc Luận cương của ai?",a:["Mác","Lênin","Stalin","Trotsky"],c:1},
-  {q:"Đảng Cộng sản Việt Nam thành lập năm?",a:["1929","1930","1931","1932"],c:1},
-  {q:"Chủ tịch Hồ Chí Minh mất năm?",a:["1967","1968","1969","1970"],c:2},
-  {q:"Hội nghị hợp nhất Đảng diễn ra ở?",a:["Bắc Kinh","Hồng Kông","Quảng Châu","Paris"],c:1},
-  {q:"Nguyễn Ái Quốc lấy tên Hồ Chí Minh năm?",a:["1940","1941","1942","1943"],c:2},
-  {q:"Việt Nam bình thường hóa quan hệ với Mỹ năm?",a:["1993","1994","1995","1996"],c:2},
-  {q:"Vì sao Nguyễn Ái Quốc chọn con đường cách mạng vô sản?",a:["Do Lênin chỉ ra con đường giải phóng dân tộc","Do Pháp gợi ý","Do Nhật giúp","Do Trung Quốc giúp"],c:0},
-  {q:"Ý nghĩa lớn nhất của việc tìm ra con đường cứu nước là?",a:["Giải quyết khủng hoảng đường lối","Được nhiều tiền","Được nổi tiếng","Có thêm đồng minh"],c:0},
-  {q:"Vì sao phong trào Đông Du thất bại?",a:["Nhật trục xuất du học sinh","Thiếu tiền","Không có lãnh đạo","Do dân không ủng hộ"],c:0},
-  {q:"Mục tiêu của Phan Châu Trinh là gì?",a:["Cải cách đất nước","Đánh Pháp bằng vũ lực","Theo Nhật","Theo Mỹ"],c:0},
-  {q:"Tại sao Nguyễn Ái Quốc gửi yêu sách năm 1919?",a:["Đòi quyền tự do dân chủ","Xin viện trợ","Xin độc lập ngay","Xin làm thuộc địa"],c:0},
-  {q:"Điểm khác nhau giữa Phan Bội Châu và Phan Châu Trinh?",a:["Một người bạo động một người cải cách","Cả hai giống nhau","Đều theo Nhật","Đều theo Pháp"],c:0},
-  {q:"Vì sao phải thành lập Đảng Cộng sản?",a:["Lãnh đạo cách mạng","Có thêm tiền","Có thêm quân","Để nổi tiếng"],c:0},
-  {q:"Ý nghĩa của Hiệp định Genève?",a:["Chấm dứt chiến tranh Đông Dương","Chia đất nước","Mỹ thắng","Pháp thắng"],c:0},
-  {q:"Hiệp định Paris có ý nghĩa gì?",a:["Mỹ rút quân","Pháp quay lại","Việt Nam chia đôi","Chiến tranh tiếp tục"],c:0},
-  {q:"Vai trò của đối ngoại trong chiến tranh?",a:["Tìm sự ủng hộ quốc tế","Chỉ để giao lưu","Chỉ để buôn bán","Không quan trọng"],c:0},
-  {q:"Nếu không có đối ngoại Việt Nam có thể?",a:["Bị cô lập","Mạnh hơn","Không thay đổi","Giàu hơn"],c:0},
-  {q:"Quan hệ quốc tế giúp Việt Nam?",a:["Nhận ủng hộ","Không ảnh hưởng","Chỉ du lịch","Chỉ học tập"],c:0},
-  {q:"ASEAN giúp Việt Nam?",a:["Hợp tác kinh tế","Đánh nhau","Cấm vận","Không tác dụng"],c:0},
-  {q:"Hội nhập quốc tế giúp?",a:["Phát triển kinh tế","Chiến tranh","Cô lập","Nghèo hơn"],c:0},
-  {q:"Quan hệ với Mỹ giúp Việt Nam?",a:["Phát triển kinh tế","Chiến tranh","Bị cô lập","Không thay đổi"],c:0},
-  {q:"Ngoại giao giúp bảo vệ?",a:["Chủ quyền","Tiền","Nhà","Xe"],c:0},
-  {q:"Hội nhập giúp sinh viên?",a:["Cơ hội học tập","Không có gì","Chiến tranh","Bị hạn chế"],c:0},
-  {q:"Đối ngoại giúp doanh nghiệp?",a:["Xuất khẩu","Chiến tranh","Cấm vận","Không ảnh hưởng"],c:0},
-  {q:"Ngoại giao giúp hòa bình?",a:["Có","Không","Chỉ đôi khi","Không chắc"],c:0},
-  {q:"Quan hệ quốc tế giúp?",a:["Hợp tác","Chiến tranh","Cô lập","Xung đột"],c:0},
-  {q:"Hợp tác quốc tế giúp?",a:["Phát triển","Chiến tranh","Nghèo hơn","Không đổi"],c:0},
-  {q:"Quan hệ ASEAN giúp?",a:["Thương mại","Chiến tranh","Cấm vận","Không"],c:0},
-  {q:"Ngoại giao giúp giải quyết?",a:["Tranh chấp hòa bình","Chiến tranh","Bạo lực","Không"],c:0},
-  {q:"Việt Nam tham gia WTO giúp?",a:["Thương mại","Chiến tranh","Cấm vận","Không"],c:0},
-  {q:"Hội nhập giúp Việt Nam?",a:["Phát triển","Cô lập","Chiến tranh","Không"],c:0},
-  {q:"Nếu không có Nguyễn Ái Quốc tìm ra con đường cách mạng?",a:["Phong trào có thể bế tắc lâu hơn","Việt Nam giàu hơn","Chiến tranh ít hơn","Không thay đổi"],c:0},
-  {q:"Nếu không có đối ngoại trong kháng chiến?",a:["Việt Nam khó thắng","Việt Nam mạnh hơn","Không ảnh hưởng","Chiến tranh nhanh"],c:0},
-  {q:"Nếu Việt Nam không hội nhập quốc tế?",a:["Kinh tế chậm phát triển","Giàu hơn","Không đổi","Chiến tranh"],c:0},
-  {q:"Vai trò lớn nhất của Hồ Chí Minh?",a:["Lãnh đạo cách mạng","Làm kinh tế","Xây nhà","Phát minh"],c:0},
-  {q:"Bài học lớn nhất từ đối ngoại Việt Nam?",a:["Hợp tác quốc tế quan trọng","Không cần bạn bè","Chỉ tự lực","Đóng cửa"],c:0}
+  // 💌 DỄ
+  {q:"💌 Phong trào Đông Du do ai lãnh đạo?",a:["Phan Bội Châu","Phan Châu Trinh","Nguyễn Ái Quốc","Trường Chinh"],c:0},
+  {q:"💌 Phong trào Đông Du diễn ra chủ yếu ở nước nào?",a:["Trung Quốc","Nhật Bản","Pháp","Mỹ"],c:1},
+  {q:"💌 Phan Châu Trinh hoạt động chủ yếu ở đâu?",a:["Nhật","Pháp","Trung Quốc","Nga"],c:1},
+  {q:"💌 Nguyễn Ái Quốc gửi Bản yêu sách của nhân dân An Nam năm nào?",a:["1918","1919","1920","1921"],c:1},
+  {q:"💌 Nguyễn Ái Quốc đọc Luận cương của Lênin năm nào?",a:["1919","1920","1921","1922"],c:1},
+  {q:"💌 Đảng Cộng sản Pháp được Nguyễn Ái Quốc tham gia sáng lập năm nào?",a:["1919","1920","1921","1922"],c:1},
+  {q:"💌 Nguyễn Ái Quốc đến Liên Xô năm nào?",a:["1922","1923","1924","1925"],c:1},
+  {q:"💌 Hội Việt Nam Cách mạng Thanh niên thành lập năm?",a:["1923","1924","1925","1926"],c:2},
+  {q:"💌 Nguyễn Ái Quốc về nước năm nào?",a:["1940","1941","1942","1943"],c:1},
+  {q:"💌 Cách mạng tháng Tám thành công năm?",a:["1943","1944","1945","1946"],c:2},
+  {q:"💌 Hiệp định Genève ký năm?",a:["1953","1954","1955","1956"],c:1},
+  {q:"💌 Hiệp định Paris ký năm?",a:["1971","1972","1973","1974"],c:2},
+  {q:"💌 Việt Nam gia nhập Liên Hợp Quốc năm?",a:["1975","1976","1977","1978"],c:2},
+  {q:"💌 Việt Nam gia nhập ASEAN năm?",a:["1993","1994","1995","1996"],c:2},
+  {q:"💌 Nguyễn Ái Quốc rời Bến Nhà Rồng năm?",a:["1910","1911","1912","1913"],c:1},
+  {q:"💌 Tên thật của Hồ Chí Minh là?",a:["Nguyễn Sinh Cung","Nguyễn Ái Quốc","Nguyễn Tất Thành","Hồ Chí Minh"],c:0},
+  {q:"💌 Hồ Chí Minh sinh năm?",a:["1889","1890","1891","1892"],c:1},
+  {q:"💌 Hồ Chí Minh đọc Tuyên ngôn độc lập ngày?",a:["1/9/1945","2/9/1945","3/9/1945","4/9/1945"],c:1},
+  {q:"💌 Việt Minh thành lập năm?",a:["1940","1941","1942","1943"],c:1},
+  {q:"💌 Đảng Cộng sản Việt Nam thành lập năm?",a:["1929","1930","1931","1932"],c:1},
+  {q:"💌 Chủ tịch Hồ Chí Minh mất năm?",a:["1967","1968","1969","1970"],c:2},
+  {q:"💌 Nguyễn Ái Quốc lấy tên Hồ Chí Minh năm?",a:["1940","1941","1942","1943"],c:2},
+  {q:"💌 Việt Nam bình thường hóa quan hệ với Mỹ năm?",a:["1993","1994","1995","1996"],c:2},
+  {q:"💌 Nguyễn Ái Quốc đọc Luận cương của ai?",a:["Mác","Lênin","Stalin","Trotsky"],c:1},
+  {q:"💌 Hội nghị hợp nhất Đảng diễn ra ở?",a:["Bắc Kinh","Hồng Kông","Quảng Châu","Paris"],c:1},
+  {q:"💌 Ngoại giao giúp bảo vệ điều gì quan trọng nhất?",a:["Chủ quyền","Tiền","Nhà","Xe"],c:0},
+  {q:"💌 ASEAN giúp Việt Nam điều gì?",a:["Hợp tác kinh tế","Đánh nhau","Cấm vận","Không tác dụng"],c:0},
+  {q:"💌 Hội nhập quốc tế giúp sinh viên điều gì?",a:["Cơ hội học tập","Không có gì","Chiến tranh","Bị hạn chế"],c:0},
+  {q:"💌 Vai trò lớn nhất của Hồ Chí Minh là gì?",a:["Lãnh đạo cách mạng","Làm kinh tế","Xây nhà","Phát minh"],c:0},
+  {q:"💌 Ngoại giao giúp giải quyết tranh chấp bằng cách nào?",a:["Hòa bình","Chiến tranh","Bạo lực","Không giải quyết"],c:0},
+
+  // 👀 TRUNG BÌNH
+  {q:"👀 Hiệp định Sơ bộ Việt - Pháp ký ngày?",a:["6/3/1946","2/9/1945","19/12/1946","7/5/1954"],c:0},
+  {q:"👀 Vì sao Nguyễn Ái Quốc chọn con đường cách mạng vô sản?",a:["Do Lênin chỉ ra con đường giải phóng dân tộc","Do Pháp gợi ý","Do Nhật giúp","Do Trung Quốc giúp"],c:0},
+  {q:"👀 Ý nghĩa lớn nhất của việc tìm ra con đường cứu nước là?",a:["Giải quyết khủng hoảng đường lối","Được nhiều tiền","Được nổi tiếng","Có thêm đồng minh"],c:0},
+  {q:"👀 Vì sao phong trào Đông Du thất bại?",a:["Nhật trục xuất du học sinh","Thiếu tiền","Không có lãnh đạo","Do dân không ủng hộ"],c:0},
+  {q:"👀 Mục tiêu của Phan Châu Trinh là gì?",a:["Cải cách đất nước","Đánh Pháp bằng vũ lực","Theo Nhật","Theo Mỹ"],c:0},
+  {q:"👀 Điểm khác nhau giữa Phan Bội Châu và Phan Châu Trinh?",a:["Một người bạo động một người cải cách","Cả hai giống nhau","Đều theo Nhật","Đều theo Pháp"],c:0},
+  {q:"👀 Ý nghĩa của Hiệp định Genève?",a:["Chấm dứt chiến tranh Đông Dương","Chia đất nước","Mỹ thắng","Pháp thắng"],c:0},
+  {q:"👀 Hiệp định Paris có ý nghĩa gì?",a:["Mỹ rút quân","Pháp quay lại","Việt Nam chia đôi","Chiến tranh tiếp tục"],c:0},
+  {q:"👀 Nguyễn Ái Quốc hoạt động ở Quảng Châu năm nào?",a:["1923","1924","1925","1926"],c:2},
+  {q:"👀 Việt Nam Quang phục hội thành lập năm nào?",a:["1910","1911","1912","1913"],c:2},
+  {q:"👀 Phong trào Đông Du kết thúc năm nào?",a:["1907","1908","1909","1910"],c:1},
+  {q:"👀 Phan Châu Trinh sang Pháp năm nào?",a:["1910","1911","1912","1913"],c:1},
+  {q:"👀 Nếu không có Nguyễn Ái Quốc tìm ra con đường cách mạng?",a:["Phong trào có thể bế tắc lâu hơn","Việt Nam giàu hơn","Chiến tranh ít hơn","Không thay đổi"],c:0},
+  {q:"👀 Nếu không có đối ngoại trong kháng chiến?",a:["Việt Nam khó thắng","Việt Nam mạnh hơn","Không ảnh hưởng","Chiến tranh nhanh"],c:0},
+  {q:"👀 Nếu Việt Nam không hội nhập quốc tế?",a:["Kinh tế chậm phát triển","Giàu hơn","Không đổi","Chiến tranh"],c:0},
+  {q:"👀 Vai trò của đối ngoại trong chiến tranh là gì?",a:["Tìm sự ủng hộ quốc tế","Chỉ để giao lưu","Chỉ để buôn bán","Không quan trọng"],c:0},
+  {q:"👀 Vì sao phải thành lập Đảng Cộng sản?",a:["Lãnh đạo cách mạng","Có thêm tiền","Có thêm quân","Để nổi tiếng"],c:0},
+  {q:"👀 Bài học lớn nhất từ đối ngoại Việt Nam là gì?",a:["Hợp tác quốc tế quan trọng","Không cần bạn bè","Chỉ tự lực","Đóng cửa"],c:0},
+  {q:"👀 Tại sao Nguyễn Ái Quốc gửi yêu sách năm 1919?",a:["Đòi quyền tự do dân chủ","Xin viện trợ","Xin độc lập ngay","Xin làm thuộc địa"],c:0},
+  {q:"👀 Hội nhập giúp Việt Nam điều gì quan trọng nhất?",a:["Phát triển kinh tế","Cô lập","Chiến tranh","Không có gì"],c:0},
+
+  // ⚠️ SIÊU KHÓ
+  {q:"⚠️ Tại HN hợp nhất 2/1930, tên ban đầu của Đảng là gì trước khi đổi theo chỉ thị Quốc tế Cộng sản?",a:["Đảng Cộng sản Đông Dương","Đảng Cộng sản Việt Nam","An Nam Cộng sản Đảng","Đông Dương Cộng sản Đảng"],c:1},
+  {q:"⚠️ Nguyễn Ái Quốc gửi Bản yêu sách tới Hội nghị Versailles nhân danh tổ chức nào?",a:["Hội Việt Nam Cách mạng Thanh niên","Nhóm người Việt Nam yêu nước tại Pháp","Đảng Xã hội Pháp","Quốc tế Cộng sản"],c:1},
+  {q:"⚠️ Luận cương dân tộc và thuộc địa của Lênin được đăng trên tờ báo nào mà Nguyễn Ái Quốc đọc được?",a:["Nhân Đạo","Pravda","Tia Sáng","Đời sống thợ thuyền"],c:0},
+  {q:"⚠️ Hội Việt Nam Cách mạng Thanh niên tiền thân là tổ chức nào?",a:["Tâm Tâm Xã","Việt Nam Quang phục hội","Đông Dương Cộng sản Đảng","Hội Phục Việt"],c:0},
+  {q:"⚠️ Phan Bội Châu bị bắt ở đâu và bị giải về Việt Nam năm 1925?",a:["Bắc Kinh","Thượng Hải","Quảng Châu","Tokyo"],c:2},
+  {q:"⚠️ Tờ báo 'Người cùng khổ' (Le Paria) do Nguyễn Ái Quốc sáng lập năm bao nhiêu?",a:["1920","1921","1922","1923"],c:2},
+  {q:"⚠️ Nguyễn Ái Quốc lấy bí danh Lý Thụy khi hoạt động ở đâu?",a:["Liên Xô","Trung Quốc","Thái Lan","Pháp"],c:1},
+  {q:"⚠️ Khởi nghĩa Yên Bái do tổ chức nào lãnh đạo và thất bại năm nào?",a:["VNQDĐ - 1930","Hội VNCMTN - 1929","ĐCS VN - 1930","Tâm Tâm Xã - 1929"],c:0},
+  {q:"⚠️ Đại hội lần thứ V của Quốc tế Cộng sản (1924) có ý nghĩa gì với Nguyễn Ái Quốc?",a:["Ông được kết nạp vào QTCS","Ông được cử về châu Á hoạt động","Ông gặp Stalin lần đầu","Ông được phong hàm tướng"],c:1},
+  {q:"⚠️ 'Đường Kách Mệnh' được Nguyễn Ái Quốc viết năm nào và dùng để làm gì?",a:["1925 - Tài liệu huấn luyện cán bộ","1926 - Tuyên truyền trong nước","1927 - Giáo trình chính trị","1928 - Hướng dẫn khởi nghĩa"],c:0},
+  {q:"⚠️ Chiến dịch 'vô sản hóa' của Hội VNCMTN (1928) nhằm mục đích gì?",a:["Đưa trí thức vào nhà máy để giác ngộ công nhân","Thu hút công nhân vào Đảng","Xóa bỏ giai cấp tư sản","Phát triển kinh tế công nghiệp"],c:0},
+  {q:"⚠️ Hiệp định Sơ bộ 6/3/1946 cho phép bao nhiêu quân Pháp ra Bắc thay thế quân Tưởng?",a:["10.000","15.000","20.000","25.000"],c:1},
+  {q:"⚠️ Tạm ước 14/9/1946 được ký kết ở đâu và giữa ai?",a:["Paris - HCM và Moutet","Fontainebleau - HCM và Bidault","Hà Nội - HCM và Sainteny","Geneva - HCM và De Gaulle"],c:0},
+  {q:"⚠️ Chiến dịch nào đánh dấu bước ngoặt từ phòng ngự sang tấn công trong kháng chiến chống Pháp?",a:["Chiến dịch Việt Bắc 1947","Chiến dịch Biên Giới 1950","Chiến dịch Trung Du 1951","Chiến dịch Điện Biên Phủ 1954"],c:1},
+  {q:"⚠️ Điều khoản nào của Hiệp định Genève quy định thời hạn tổng tuyển cử thống nhất VN?",a:["Điều 6","Điều 7","Điều 14","Điều 17"],c:1},
+  {q:"⚠️ Nghị quyết 15 (1959) của TW Đảng có ý nghĩa gì với cách mạng miền Nam?",a:["Cho phép dùng bạo lực cách mạng ở miền Nam","Thành lập MTGPMN","Mở đường Trường Sơn","Thống nhất chỉ huy quân sự"],c:0},
+  {q:"⚠️ Mặt trận Dân tộc Giải phóng miền Nam Việt Nam thành lập ngày tháng năm nào?",a:["20/12/1960","1/1/1961","19/5/1960","2/9/1960"],c:0},
+  {q:"⚠️ Chiến lược 'Chiến tranh đặc biệt' của Mỹ dựa vào lực lượng chủ yếu nào?",a:["Quân đội Sài Gòn với cố vấn Mỹ","Lính Mỹ trực tiếp chiến đấu","Lính đánh thuê","Không quân Mỹ"],c:0},
+  {q:"⚠️ Hiệp định Paris 1973 được ký chính thức ngày mấy tháng mấy?",a:["15/1/1973","27/1/1973","28/1/1973","1/2/1973"],c:1},
+  {q:"⚠️ Chiến dịch Hồ Chí Minh bắt đầu và kết thúc ngày nào năm 1975?",a:["26/4 - 30/4","24/4 - 30/4","25/4 - 1/5","27/4 - 30/4"],c:0},
 ]
 
 // ===== BIẾN GAME =====
@@ -414,6 +442,29 @@ let time = 20
 let timer
 let fear = 50
 let watch = 0
+
+// ===== ĐỘ KHÓ =====
+let difficulty = 'medium'
+let diffSettings = {
+  easy:   { time: 30, bonusTime: 8,  penaltyTime: 2, fearPlus: 10, watchPlus: 3,  oneStrike: false, cheatCatch: false },
+  medium: { time: 20, bonusTime: 5,  penaltyTime: 3, fearPlus: 15, watchPlus: 5,  oneStrike: false, cheatCatch: false },
+  hard:   { time: 15, bonusTime: 3,  penaltyTime: 5, fearPlus: 25, watchPlus: 10, oneStrike: true,  cheatCatch: true  }
+}
+
+function selectDiff(d){
+  difficulty = d
+  document.getElementById("btnEasy").style.outline = "none"
+  document.getElementById("btnMedium").style.outline = "none"
+  document.getElementById("btnHard").style.outline = "none"
+  document.getElementById("btn" + d.charAt(0).toUpperCase() + d.slice(1)).style.outline = "3px solid white"
+
+  let desc = {
+    easy:   "😊 Thời gian 30s | +8s đúng | -2s sai | Ít bất lợi",
+    medium: "😐 Thời gian 20s | +5s đúng | -3s sai | Bình thường",
+    hard:   "💀 Thời gian 15s | +3s đúng | -5s sai | Sai 1 lần = THUA | Gian lận 100% bị bắt!"
+  }
+  document.getElementById("diffDesc").innerText = desc[d]
+}
 
 // ===== THANH TRẠNG THÁI =====
 function updateBars(){
@@ -482,16 +533,27 @@ function changeBg(){
 
 // ===== GAME =====
 function startGame(){
+  let cfg = diffSettings[difficulty]
+  time = cfg.time
+
   questions.sort(() => Math.random() - 0.5)
   document.getElementById("start").style.display = "none"
   document.getElementById("quiz").style.display = "block"
   document.getElementById("statusBars").style.cssText = "display:flex; flex-direction:column;"
+
+  // Try Hard: gian lận 100% bị bắt
+  if(difficulty === 'hard'){
+    watch = 0
+  }
+
   updateBars()
   loadQuestion()
 }
 
 function loadQuestion(){
-  time = 20
+  let cfg = diffSettings[difficulty]
+  time = cfg.time
+
   let q = questions[current]
   let answers = [...q.a]
   answers.sort(() => Math.random() - 0.5)
@@ -522,18 +584,20 @@ function startTimer(){
 }
 
 function answer(correct){
+  let cfg = diffSettings[difficulty]
+
   if(correct){
     score++
     changeFear(-10)
     changeWatch(-5)
 
-    // Thưởng +8s
-    time = Math.min(time + 8, 20)
+    // Thưởng thời gian theo độ khó
+    time = Math.min(time + cfg.bonusTime, cfg.time)
     document.getElementById("timer").innerText = time
 
     // Hiện thông báo
     let bonus = document.createElement("div")
-    bonus.innerText = "+8 giây! ⏰"
+    bonus.innerText = "+" + cfg.bonusTime + " giây! ⏰"
     bonus.style.cssText = `
       position:fixed; top:20px; left:50%;
       transform:translateX(-50%);
@@ -549,20 +613,31 @@ function answer(correct){
 
   } else {
     wrong++
-    changeFear(+15)
-    changeWatch(+5)
+    changeFear(+cfg.fearPlus)
+    changeWatch(+cfg.watchPlus)
 
-    // Trừ 2s
-    time = Math.max(time - 2, 5)
+    // Try Hard: sai 1 lần thua luôn
+    if(cfg.oneStrike){
+      let opts = document.querySelectorAll(".option")
+      opts.forEach(opt => {
+        if(opt.onclick.toString().includes("true")){ opt.style.background = "#4CAF50"; opt.style.color = "white" }
+        opt.style.pointerEvents = "none"
+      })
+      clearInterval(timer)
+      setTimeout(() => {
+        showMsg("💀 SAI RỒI! Try Hard = Sai 1 lần THUA LUÔN!\n\nĐáp án đúng đã được tô xanh!", () => endGame())
+      }, 1000)
+      return
+    }
+
+    // Trừ thời gian theo độ khó
+    time = Math.max(time - cfg.penaltyTime, 5)
     document.getElementById("timer").innerText = time
 
     // Tô xanh đáp án đúng
     let opts = document.querySelectorAll(".option")
     opts.forEach(opt => {
-      if(opt.onclick.toString().includes("true")){
-        opt.style.background = "#4CAF50"
-        opt.style.color = "white"
-      }
+      if(opt.onclick.toString().includes("true")){ opt.style.background = "#4CAF50"; opt.style.color = "white" }
       opt.style.pointerEvents = "none"
     })
 
@@ -606,8 +681,9 @@ function endGame(){
 
   document.getElementById("resultTitle").innerText =
     pct >= 80 ? "🎉 Xuất sắc!" : pct >= 50 ? "👍 Khá tốt!" : "😅 Cố gắng hơn nhé!"
+  let diffLabel = { easy: "😊 Dễ", medium: "😐 Trung bình", hard: "💀 Try Hard" }
   document.getElementById("result").innerText =
-    `${name} đúng ${score}/${questions.length} câu (${pct}%) | Sai ${wrong} lần`
+    `${name} đúng ${score}/${questions.length} câu (${pct}%) | Sai ${wrong} lần | ${diffLabel[difficulty]}`
 }
 
 // ===== POPUP THÔNG BÁO =====
@@ -653,6 +729,13 @@ function askTeacher(){
 function usePhao(){
   if(watch >= 80){ showMsg("👀 Thầy cô đang nhìn chằm chằm!\nKhông dám lật phao!"); return }
 
+  // Try Hard: 100% bị bắt
+  if(difficulty === 'hard'){
+    changeWatch(+100)
+    showMsg("💀 Try Hard: Lật phao bị bắt ngay!\nGian lận = THUA LUÔN!")
+    return
+  }
+
   let rand = Math.random()
   if(rand < 0.7){
     changeWatch(+20)
@@ -669,10 +752,14 @@ function usePhao(){
 
 // 🤖 Hỏi AI (nhiều lần, +độ để ý)
 function askAI(){
+  if(difficulty === 'hard'){
+    changeWatch(+100)
+    showMsg("💀 Try Hard: Dùng AI bị phát hiện ngay!\nGian lận = THUA LUÔN!")
+    return
+  }
   changeWatch(+15)
   let rand = Math.random()
   let ans = questions[current].a[questions[current].c]
-
   if(rand < 0.9){
     showMsg("🤖 AI trả lời:\n\n\"Theo phân tích của tôi: <b>" + ans + "</b>\"\n\n+15 độ để ý 👀")
   } else {
@@ -685,8 +772,12 @@ function askAI(){
 
 // 👀 Quay cóp (nhiều lần, +độ để ý)
 function quayCop(){
+  if(difficulty === 'hard'){
+    changeWatch(+100)
+    showMsg("💀 Try Hard: Quay cóp bị bắt ngay!\nGian lận = THUA LUÔN!")
+    return
+  }
   if(watch >= 60){ showMsg("👀 Thầy cô đang để ý bạn!\nKhông dám quay cóp!"); return }
-
   let rand = Math.random()
   if(rand < 0.75){
     changeWatch(+25)
