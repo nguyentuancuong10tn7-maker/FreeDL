@@ -5,7 +5,10 @@
 <title>Quiz Lịch Sử</title>
 
 <style>
-
+@keyframes fadeOut {
+  0% { opacity:1; transform:translateX(-50%) translateY(0); }
+  100% { opacity:0; transform:translateX(-50%) translateY(-30px); }
+}
 Bạn đã gửi
 /* Body */
 body {
@@ -205,7 +208,7 @@ button:hover {
 <div id="quiz" style="display:none">
 
 <div id="timer">20</div>
-<div id="wrong">Sai: 0 / 7</div>
+<div id="wrong">Sai: 0 / 60</div>
 
 <h2 id="question"></h2>
 
@@ -418,7 +421,6 @@ loadQuestion()
 
 function loadQuestion(){
 
-time=20
 
 let q=questions[current]
 
@@ -469,137 +471,130 @@ if(time<=0){
 
 function answer(correct){
 
-if(correct){
+  if(correct){
+    score++
+    document.getElementById("correctSound").play()
 
-score++
-document.getElementById("correctSound").play()
+    // Cộng 2s, tối đa 20s
+    time = Math.min(time + 8, 100);
+    document.getElementById("timer").innerText = time;
 
-}else{
+    // Hiện thông báo +8s
+    let bonus = document.createElement("div");
+    bonus.innerText = "+2 giây! ⏰";
+    bonus.style.cssText = `
+      position:fixed; top:20px; left:50%;
+      transform:translateX(-50%);
+      background:#4CAF50; color:white;
+      padding:10px 20px; border-radius:20px;
+      font-size:20px; font-weight:bold;
+      z-index:9999; animation: fadeOut 1.5s forwards;
+    `;
+    document.body.appendChild(bonus);
+    setTimeout(() => bonus.remove(), 1500);
 
-wrong++
-document.getElementById("wrongSound").play()
+    nextQuestion()
 
-document.getElementById("wrong").innerText="Sai: "+wrong+" / 7"
+  }else{
+    wrong++
+    document.getElementById("wrongSound").play()
+    document.getElementById("wrong").innerText="Sai: "+wrong+" / 7"
 
-if(wrong>=7){
+    // Trừ 3s, tối thiểu 5s
+    time = Math.max(time - 4, 5);
+    document.getElementById("timer").innerText = time;
 
-alert("Bạn đã sai 7 lần. Game Over!")
-endGame()
-return
+    // Hiện đáp án đúng
+    let opts = document.querySelectorAll(".option");
+    opts.forEach(opt => {
+      if(opt.onclick.toString().includes("true")){
+        opt.style.background = "#4CAF50";
+        opt.style.color = "white";
+      }
+      opt.style.pointerEvents = "none";
+    });
 
-}
+    if(wrong>=7){
+      clearInterval(timer);
+      setTimeout(() => {
+        alert("Bạn đã sai 7 lần. Game Over!")
+        endGame()
+      }, 2000);
+      return
+    }
 
-}
-
-nextQuestion()
-
+    clearInterval(timer);
+    setTimeout(() => {
+      nextQuestion();
+    }, 2000);
+  }
 }
 
 function nextQuestion(){
-
-clearInterval(timer)
-
-current++
-
-if(current>=questions.length){
-
-endGame()
-
-}else{
-
-loadQuestion()
-
-}
-
+  clearInterval(timer)
+  current++
+  if(current>=questions.length){
+    endGame()
+  }else{
+    loadQuestion()
+  }
 }
 
 function endGame(){
-
-document.getElementById("quiz").style.display="none"
-
-document.getElementById("result").innerText=
-"Bạn đúng "+score+" câu | Sai "+wrong+" lần"
-
+  document.getElementById("quiz").style.display="none"
+  document.getElementById("result").innerText=
+  "Bạn đúng "+score+" câu | Sai "+wrong+" lần"
 }
-
-// trợ giúp
 
 function showAnswer(){
-
-if(!helpAnswer){
-alert("Bạn đã dùng trợ giúp này rồi")
-return
+  if(!helpAnswer){
+    alert("Bạn đã dùng trợ giúp này rồi")
+    return
+  }
+  helpAnswer=false
+  alert("Đáp án đúng: "+questions[current].a[questions[current].c])
 }
 
-helpAnswer=false
-
-alert("Đáp án đúng: "+questions[current].a[questions[current].c])
-
-}
-
-function audience(){
-
-if(!helpAudience){
-alert("Bạn đã dùng trợ giúp này rồi")
-return
-}
-
-helpAudience=false
-
-let correct=questions[current].c
-
-let percent=[0,0,0,0]
-
-percent[correct]=Math.floor(Math.random()*30)+40
-
-for(let i=0;i<4;i++){
-
-if(i!=correct){
-
-percent[i]=Math.floor(Math.random()*20)
-
-}
-
-}
-
-alert(
-"A:"+percent[0]+"%\n"+
-"B:"+percent[1]+"%\n"+
-"C:"+percent[2]+"%\n"+
-"D:"+percent[3]+"%"
-)
-
+function helpAudienceFunc(){
+  if(!helpAudience){
+    alert("Bạn đã dùng trợ giúp này rồi")
+    return
+  }
+  helpAudience=false
+  let correct=questions[current].c
+  let percent=[0,0,0,0]
+  percent[correct]=Math.floor(Math.random()*30)+40
+  for(let i=0;i<4;i++){
+    if(i!=correct){
+      percent[i]=Math.floor(Math.random()*20)
+    }
+  }
+  alert(
+    "A:"+percent[0]+"%\n"+
+    "B:"+percent[1]+"%\n"+
+    "C:"+percent[2]+"%\n"+
+    "D:"+percent[3]+"%"
+  )
 }
 
 function callFriend(){
-
-if(!helpCall){
-alert("Bạn đã dùng trợ giúp này rồi")
-return
-}
-
-helpCall=false
-
-let correct=questions[current].c
-
-let guess=Math.random()<0.875?correct:Math.floor(Math.random()*4)
-
-alert("Người thân đã tra GG và có đáp án: "+questions[current].a[guess])
-
+  if(!helpCall){
+    alert("Bạn đã dùng trợ giúp này rồi")
+    return
+  }
+  helpCall=false
+  let correct=questions[current].c
+  let guess=Math.random()<0.875?correct:Math.floor(Math.random()*4)
+  alert("Người thân đã tra GG và có đáp án: "+questions[current].a[guess])
 }
 
 function skip(){
-
-if(!helpSkip){
-alert("Bạn đã dùng trợ giúp này rồi")
-return
-}
-
-
-helpSkip=false
-
-nextQuestion()
-
+  if(!helpSkip){
+    alert("Bạn đã dùng trợ giúp này rồi")
+    return
+  }
+  helpSkip=false
+  nextQuestion()
 }
 
 </script>
