@@ -2,14 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Lịch Sử</title>
-
 <style>
-@keyframes fadeOut {
-  0% { opacity:1; transform:translateX(-50%) translateY(0); }
-  100% { opacity:0; transform:translateX(-50%) translateY(-30px); }
-}
-Bạn đã gửi
+
 /* Body */
 body {
   font-family: 'Arial', sans-serif;
@@ -20,6 +16,7 @@ body {
   transition: background 1s;
   min-height: 100vh;
   margin: 0;
+  padding-bottom: 100px;
 }
 
 @keyframes bgMove {
@@ -36,19 +33,14 @@ h1 {
 }
 
 @keyframes titleGlow {
-  from {
-    text-shadow: 0 0 10px #da020a, 0 0 20px #da020a;
-    color: #FFD700;
-  }
-  to {
-    text-shadow: 0 0 10px #FFD700, 0 0 30px #FFD700;
-    color: #ffffff;
-  }
+  from { text-shadow: 0 0 10px #da020a, 0 0 20px #da020a; color: #FFD700; }
+  to { text-shadow: 0 0 10px #FFD700, 0 0 30px #FFD700; color: #ffffff; }
 }
 
 /* Quiz box */
 #quiz {
-  width: 700px;
+  width: 90%;
+  max-width: 650px;
   margin: 30px auto;
   background: rgba(255,255,255,0.92);
   padding: 20px;
@@ -83,12 +75,6 @@ h1 {
   font-weight: bold;
 }
 
-/* Sai */
-#wrong {
-  font-size: 18px;
-  color: darkred;
-}
-
 /* Nút */
 button {
   margin: 5px;
@@ -115,7 +101,7 @@ button:hover {
   right: 15px;
   display: flex;
   gap: 10px;
-  z-index: 999;
+  z-index: 1000;
 }
 
 #controls button {
@@ -133,355 +119,421 @@ button:hover {
   background: #FFD700;
   color: #8B0000;
 }
-</style>
 
+/* Thanh trạng thái - dưới cùng */
+#statusBars {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.88);
+  padding: 8px 12px;
+  color: white;
+  font-size: 12px;
+  z-index: 999;
+  display: none;
+}
+
+#barRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+#barRow > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  max-width: 220px;
+}
+
+@media (max-width: 600px) {
+  #quiz { width: 95%; padding: 12px; margin: 10px auto; }
+  h1 { font-size: 20px; }
+  .option { font-size: 14px; padding: 10px; }
+  #helpBtns button { font-size: 10px; padding: 4px 7px; }
+  #controls { top: 8px; right: 8px; gap: 4px; }
+  #controls button { font-size: 11px; padding: 5px 8px; }
+  #timer { font-size: 20px; }
+}
+
+.barWrap {
+  flex: 1;
+  height: 10px;
+  border-radius: 10px;
+  background: #333;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s, background 0.5s;
+}
+
+#fearBarFill { background: #00cc00; }
+#watchBarFill { background: #ffff00; }
+
+#helpBtns {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 2px 0;
+}
+
+#helpBtns button {
+  padding: 5px 8px;
+  font-size: 11px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+#helpBtns button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Nút trợ giúp */
+#helpBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+#helpBtns button {
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 0;
+}
+
+#helpBtns button:hover {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.05);
+  color: white;
+}
+
+#helpBtns button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Animation thưởng */
+@keyframes fadeOut {
+  0% { opacity:1; transform:translateX(-50%) translateY(0); }
+  100% { opacity:0; transform:translateX(-50%) translateY(-30px); }
+}
+
+/* Popup thông báo trong trang */
+#msgBox {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.92);
+  color: white;
+  padding: 20px 25px;
+  border-radius: 16px;
+  font-size: 15px;
+  z-index: 9999;
+  max-width: 85%;
+  text-align: center;
+  line-height: 1.6;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+#msgBox button {
+  margin-top: 12px;
+  background: #FFD700;
+  color: #8B0000;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#msgOverlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 9998;
+}
+
+</style>
 </head>
 
 <body>
-    <!-- Nút điều khiển -->
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Popup thông báo -->
+<div id="msgOverlay" onclick="closeMsg()"></div>
+<div id="msgBox">
+  <div id="msgText"></div>
+  <button onclick="closeMsg()">OK</button>
+</div>
+
+<!-- Nút điều khiển -->
 <div id="controls">
   <button onclick="toggleMusic()">🔊 Tắt nhạc</button>
   <button onclick="changeBg()">🎨 Đổi nền</button>
 </div>
-<script>
-  var isUserMuted = false;
 
-  // Tự phát nhạc khi click (trừ nút tắt nhạc)
-  document.addEventListener("click", function(e) {
-    if (e.target.closest("#controls")) return; // bỏ qua nút điều khiển
-    var music = document.getElementById("bgMusic");
-    if (music.paused && !isUserMuted) music.play();
-  });
-
-  // Tắt/bật nhạc
-  function toggleMusic() {
-    var music = document.getElementById("bgMusic");
-    var btn = document.querySelector("#controls button");
-    if (!music.paused) {
-      music.pause();
-      isUserMuted = true;
-      btn.innerText = "🔇 Bật nhạc";
-    } else {
-      music.play();
-      isUserMuted = false;
-      btn.innerText = "🔊 Tắt nhạc";
-    }
-  }
-
-  // Đổi nền
-  var backgrounds = [
-    "linear-gradient(135deg, #8B0000, #cc0000, #FFD700)",
-    "linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)",
-    "linear-gradient(135deg, #134e5e, #71b280)",
-    "linear-gradient(135deg, #f8b500, #fc5c7d)",
-  ];
-  var bgIndex = 0;
-
-  function changeBg() {
-    bgIndex = (bgIndex + 1) % backgrounds.length;
-    document.body.style.background = backgrounds[bgIndex];
-    document.body.style.backgroundSize = "400% 400%";
-  }
-</script>
-
-
-    <script>
-  document.addEventListener("click", function() {
-    var music = document.getElementById("bgMusic");
-    if (music.paused) {
-      music.play();
-    }
-  });
-</script>
+<!-- Thanh trạng thái + trợ giúp -->
+<div id="statusBars">
+  <div id="barRow">
+    <div>😱 <span id="fearNum">50</span>/100 <div class="barWrap"><div class="barFill" id="fearBarFill" style="width:50%"></div></div></div>
+    <div>👀 <span id="watchNum">0</span>/100 <div class="barWrap"><div class="barFill" id="watchBarFill" style="width:0%"></div></div></div>
+  </div>
+  <div id="helpBtns">
+    <button id="btnTeacher" onclick="askTeacher()">😰 Hỏi thầy</button>
+    <button id="btnPhao" onclick="usePhao()">📜 Lật phao</button>
+    <button id="btnAI" onclick="askAI()">🤖 Hỏi AI</button>
+    <button id="btnCopy" onclick="quayCop()">👀 Quay cóp</button>
+    <button id="btnNeighbor" onclick="askNeighbor()">🧑 Kế bên</button>
+  </div>
+</div>
 
 <h1>Quiz Lịch Sử Việt Nam</h1>
 
+<!-- Màn hình bắt đầu -->
 <div id="start">
-
-<input id="player" placeholder="Nhập tên">
-<br><br>
-
-<button onclick="startGame()">Bắt đầu</button>
-
+  <input id="player" placeholder="Nhập tên của bạn">
+  <br><br>
+  <button onclick="startGame()">Bắt đầu</button>
 </div>
 
+<!-- Màn hình quiz -->
 <div id="quiz" style="display:none">
-
-<div id="timer">20</div>
-<div id="wrong">Sai: 0 / 60</div>
-
-<h2 id="question"></h2>
-
-<div id="options"></div>
-
-<br>
-
-<h3>Trợ giúp</h3>
-
-<button onclick="showAnswer()">Xem đáp án</button>
-<button onclick="audience()">Bình chọn khán giả</button>
-<button onclick="callFriend()">Gọi người thân</button>
-<button onclick="skip()">Skip</button>
-
+  <div id="timer">20</div>
+  <h2 id="question"></h2>
+  <div id="options"></div>
 </div>
 
-<h2 id="result"></h2>
-
-<!-- NHẠC -->
-
-<audio id="bgMusic" loop>
-<source src="music..mp3" type="audio/mpeg">
-</audio>
-
-<audio id="correctSound">
-<source src="dungbr.mp3" type="audio/mpeg">
-</audio>
-
-<audio id="wrongSound">
-<source src="saibr.mp3" type="audio/mpeg">
-</audio>
+<!-- Kết quả -->
+<div id="resultScreen" style="display:none; margin-top:80px; color:white">
+  <h1 id="resultTitle"></h1>
+  <h2 id="result"></h2>
+  <button onclick="location.reload()">🔄 Chơi lại</button>
+</div>
 
 <script>
-    function gameOver(){
-  clearInterval(timer);
-  document.getElementById("quiz").style.display = "none";
-  document.getElementById("timer").style.display = "none";
-  document.body.innerHTML += `
-    <div style="
-      text-align:center;
-      margin-top:100px;
-      color:white;
-    ">
-      <h1>⏰ Hết giờ!</h1>
-      <h2>Game Over!</h2>
-      <p>Điểm của bạn: ${score}</p>
-      <button onclick="location.reload()">🔄 Chơi lại</button>
-    </div>
-  `;
-}
 
+// ===== CÂU HỎI =====
 let questions=[
-
-// EASY (30)
-
-{q:"Phong trào Đông Du do ai lãnh đạo?",a:["Phan Bội Châu","Phan Châu Trinh","Nguyễn Ái Quốc","Trường Chinh"],c:0},
-
-{q:"Phong trào Đông Du diễn ra chủ yếu ở nước nào?",a:["Trung Quốc","Nhật Bản","Pháp","Mỹ"],c:1},
-
-{q:"Phan Châu Trinh hoạt động chủ yếu ở đâu?",a:["Nhật","Pháp","Trung Quốc","Nga"],c:1},
-
-{q:"Nguyễn Ái Quốc gửi Bản yêu sách của nhân dân An Nam năm nào?",a:["1918","1919","1920","1921"],c:1},
-
-{q:"Nguyễn Ái Quốc đọc Luận cương của Lênin năm nào?",a:["1919","1920","1921","1922"],c:1},
-
-{q:"Đảng Cộng sản Pháp được Nguyễn Ái Quốc tham gia sáng lập năm nào?",a:["1919","1920","1921","1922"],c:1},
-
-{q:"Nguyễn Ái Quốc đến Liên Xô năm nào?",a:["1922","1923","1924","1925"],c:1},
-
-{q:"Hội Việt Nam Cách mạng Thanh niên thành lập năm?",a:["1923","1924","1925","1926"],c:2},
-
-{q:"Nguyễn Ái Quốc về nước năm nào?",a:["1940","1941","1942","1943"],c:1},
-
-{q:"Cách mạng tháng Tám thành công năm?",a:["1943","1944","1945","1946"],c:2},
-
-{q:"Hiệp định Sơ bộ Việt - Pháp ký ngày?",a:["6/3/1946","2/9/1945","19/12/1946","7/5/1954"],c:0},
-
-{q:"Hiệp định Genève ký năm?",a:["1953","1954","1955","1956"],c:1},
-
-{q:"Hiệp định Paris ký năm?",a:["1971","1972","1973","1974"],c:2},
-
-{q:"Việt Nam gia nhập Liên Hợp Quốc năm?",a:["1975","1976","1977","1978"],c:2},
-
-{q:"Việt Nam gia nhập ASEAN năm?",a:["1993","1994","1995","1996"],c:2},
-
-{q:"Nguyễn Ái Quốc rời Bến Nhà Rồng năm?",a:["1910","1911","1912","1913"],c:1},
-
-{q:"Tên thật của Hồ Chí Minh là?",a:["Nguyễn Sinh Cung","Nguyễn Ái Quốc","Nguyễn Tất Thành","Hồ Chí Minh"],c:0},
-
-{q:"Hồ Chí Minh sinh năm?",a:["1889","1890","1891","1892"],c:1},
-
-{q:"Hồ Chí Minh đọc Tuyên ngôn độc lập ngày?",a:["1/9/1945","2/9/1945","3/9/1945","4/9/1945"],c:1},
-
-{q:"Việt Minh thành lập năm?",a:["1940","1941","1942","1943"],c:1},
-
-{q:"Nguyễn Ái Quốc hoạt động ở Quảng Châu năm?",a:["1923","1924","1925","1926"],c:2},
-
-{q:"Việt Nam Quang phục hội thành lập năm?",a:["1910","1911","1912","1913"],c:2},
-
-{q:"Phong trào Đông Du kết thúc năm?",a:["1907","1908","1909","1910"],c:1},
-
-{q:"Phan Châu Trinh sang Pháp năm?",a:["1910","1911","1912","1913"],c:1},
-
-{q:"Nguyễn Ái Quốc đọc Luận cương của ai?",a:["Mác","Lênin","Stalin","Trotsky"],c:1},
-
-{q:"Đảng Cộng sản Việt Nam thành lập năm?",a:["1929","1930","1931","1932"],c:1},
-
-{q:"Chủ tịch Hồ Chí Minh mất năm?",a:["1967","1968","1969","1970"],c:2},
-
-{q:"Hội nghị hợp nhất Đảng diễn ra ở?",a:["Bắc Kinh","Hồng Kông","Quảng Châu","Paris"],c:1},
-
-{q:"Nguyễn Ái Quốc lấy tên Hồ Chí Minh năm?",a:["1940","1941","1942","1943"],c:2},
-
-{q:"Việt Nam bình thường hóa quan hệ với Mỹ năm?",a:["1993","1994","1995","1996"],c:2},
-
-// HACK NÃO (10)
-
-{q:"Vì sao Nguyễn Ái Quốc chọn con đường cách mạng vô sản?",a:["Do Lênin chỉ ra con đường giải phóng dân tộc","Do Pháp gợi ý","Do Nhật giúp","Do Trung Quốc giúp"],c:0},
-
-{q:"Ý nghĩa lớn nhất của việc tìm ra con đường cứu nước là?",a:["Giải quyết khủng hoảng đường lối","Được nhiều tiền","Được nổi tiếng","Có thêm đồng minh"],c:0},
-
-{q:"Vì sao phong trào Đông Du thất bại?",a:["Nhật trục xuất du học sinh","Thiếu tiền","Không có lãnh đạo","Do dân không ủng hộ"],c:0},
-
-{q:"Mục tiêu của Phan Châu Trinh là gì?",a:["Cải cách đất nước","Đánh Pháp bằng vũ lực","Theo Nhật","Theo Mỹ"],c:0},
-
-{q:"Tại sao Nguyễn Ái Quốc gửi yêu sách năm 1919?",a:["Đòi quyền tự do dân chủ","Xin viện trợ","Xin độc lập ngay","Xin làm thuộc địa"],c:0},
-
-{q:"Điểm khác nhau giữa Phan Bội Châu và Phan Châu Trinh?",a:["Một người bạo động một người cải cách","Cả hai giống nhau","Đều theo Nhật","Đều theo Pháp"],c:0},
-
-{q:"Vì sao phải thành lập Đảng Cộng sản?",a:["Lãnh đạo cách mạng","Có thêm tiền","Có thêm quân","Để nổi tiếng"],c:0},
-
-{q:"Ý nghĩa của Hiệp định Genève?",a:["Chấm dứt chiến tranh Đông Dương","Chia đất nước","Mỹ thắng","Pháp thắng"],c:0},
-
-{q:"Hiệp định Paris có ý nghĩa gì?",a:["Mỹ rút quân","Pháp quay lại","Việt Nam chia đôi","Chiến tranh tiếp tục"],c:0},
-
-{q:"Vai trò của đối ngoại trong chiến tranh?",a:["Tìm sự ủng hộ quốc tế","Chỉ để giao lưu","Chỉ để buôn bán","Không quan trọng"],c:0},
-
-// THỰC TẾ (15)
-
-{q:"Nếu không có đối ngoại Việt Nam có thể?",a:["Bị cô lập","Mạnh hơn","Không thay đổi","Giàu hơn"],c:0},
-
-{q:"Quan hệ quốc tế giúp Việt Nam?",a:["Nhận ủng hộ","Không ảnh hưởng","Chỉ du lịch","Chỉ học tập"],c:0},
-
-{q:"ASEAN giúp Việt Nam?",a:["Hợp tác kinh tế","Đánh nhau","Cấm vận","Không tác dụng"],c:0},
-
-{q:"Hội nhập quốc tế giúp?",a:["Phát triển kinh tế","Chiến tranh","Cô lập","Nghèo hơn"],c:0},
-
-{q:"Quan hệ với Mỹ giúp Việt Nam?",a:["Phát triển kinh tế","Chiến tranh","Bị cô lập","Không thay đổi"],c:0},
-
-{q:"Ngoại giao giúp bảo vệ?",a:["Chủ quyền","Tiền","Nhà","Xe"],c:0},
-
-{q:"Hội nhập giúp sinh viên?",a:["Cơ hội học tập","Không có gì","Chiến tranh","Bị hạn chế"],c:0},
-
-{q:"Đối ngoại giúp doanh nghiệp?",a:["Xuất khẩu","Chiến tranh","Cấm vận","Không ảnh hưởng"],c:0},
-
-{q:"Ngoại giao giúp hòa bình?",a:["Có","Không","Chỉ đôi khi","Không chắc"],c:0},
-
-{q:"Quan hệ quốc tế giúp?",a:["Hợp tác","Chiến tranh","Cô lập","Xung đột"],c:0},
-
-{q:"Hợp tác quốc tế giúp?",a:["Phát triển","Chiến tranh","Nghèo hơn","Không đổi"],c:0},
-
-{q:"Quan hệ ASEAN giúp?",a:["Thương mại","Chiến tranh","Cấm vận","Không"],c:0},
-
-{q:"Ngoại giao giúp giải quyết?",a:["Tranh chấp hòa bình","Chiến tranh","Bạo lực","Không"],c:0},
-
-{q:"Việt Nam tham gia WTO giúp?",a:["Thương mại","Chiến tranh","Cấm vận","Không"],c:0},
-
-{q:"Hội nhập giúp Việt Nam?",a:["Phát triển","Cô lập","Chiến tranh","Không"],c:0},
-
-// SIÊU THỰC TẾ (5)
-
-{q:"Nếu không có Nguyễn Ái Quốc tìm ra con đường cách mạng?",a:["Phong trào có thể bế tắc lâu hơn","Việt Nam giàu hơn","Chiến tranh ít hơn","Không thay đổi"],c:0},
-
-{q:"Nếu không có đối ngoại trong kháng chiến?",a:["Việt Nam khó thắng","Việt Nam mạnh hơn","Không ảnh hưởng","Chiến tranh nhanh"],c:0},
-
-{q:"Nếu Việt Nam không hội nhập quốc tế?",a:["Kinh tế chậm phát triển","Giàu hơn","Không đổi","Chiến tranh"],c:0},
-
-{q:"Vai trò lớn nhất của Hồ Chí Minh?",a:["Lãnh đạo cách mạng","Làm kinh tế","Xây nhà","Phát minh"],c:0},
-
-{q:"Bài học lớn nhất từ đối ngoại Việt Nam?",a:["Hợp tác quốc tế quan trọng","Không cần bạn bè","Chỉ tự lực","Đóng cửa"],c:0}
-
+  {q:"Phong trào Đông Du do ai lãnh đạo?",a:["Phan Bội Châu","Phan Châu Trinh","Nguyễn Ái Quốc","Trường Chinh"],c:0},
+  {q:"Phong trào Đông Du diễn ra chủ yếu ở nước nào?",a:["Trung Quốc","Nhật Bản","Pháp","Mỹ"],c:1},
+  {q:"Phan Châu Trinh hoạt động chủ yếu ở đâu?",a:["Nhật","Pháp","Trung Quốc","Nga"],c:1},
+  {q:"Nguyễn Ái Quốc gửi Bản yêu sách của nhân dân An Nam năm nào?",a:["1918","1919","1920","1921"],c:1},
+  {q:"Nguyễn Ái Quốc đọc Luận cương của Lênin năm nào?",a:["1919","1920","1921","1922"],c:1},
+  {q:"Đảng Cộng sản Pháp được Nguyễn Ái Quốc tham gia sáng lập năm nào?",a:["1919","1920","1921","1922"],c:1},
+  {q:"Nguyễn Ái Quốc đến Liên Xô năm nào?",a:["1922","1923","1924","1925"],c:1},
+  {q:"Hội Việt Nam Cách mạng Thanh niên thành lập năm?",a:["1923","1924","1925","1926"],c:2},
+  {q:"Nguyễn Ái Quốc về nước năm nào?",a:["1940","1941","1942","1943"],c:1},
+  {q:"Cách mạng tháng Tám thành công năm?",a:["1943","1944","1945","1946"],c:2},
+  {q:"Hiệp định Sơ bộ Việt - Pháp ký ngày?",a:["6/3/1946","2/9/1945","19/12/1946","7/5/1954"],c:0},
+  {q:"Hiệp định Genève ký năm?",a:["1953","1954","1955","1956"],c:1},
+  {q:"Hiệp định Paris ký năm?",a:["1971","1972","1973","1974"],c:2},
+  {q:"Việt Nam gia nhập Liên Hợp Quốc năm?",a:["1975","1976","1977","1978"],c:2},
+  {q:"Việt Nam gia nhập ASEAN năm?",a:["1993","1994","1995","1996"],c:2},
+  {q:"Nguyễn Ái Quốc rời Bến Nhà Rồng năm?",a:["1910","1911","1912","1913"],c:1},
+  {q:"Tên thật của Hồ Chí Minh là?",a:["Nguyễn Sinh Cung","Nguyễn Ái Quốc","Nguyễn Tất Thành","Hồ Chí Minh"],c:0},
+  {q:"Hồ Chí Minh sinh năm?",a:["1889","1890","1891","1892"],c:1},
+  {q:"Hồ Chí Minh đọc Tuyên ngôn độc lập ngày?",a:["1/9/1945","2/9/1945","3/9/1945","4/9/1945"],c:1},
+  {q:"Việt Minh thành lập năm?",a:["1940","1941","1942","1943"],c:1},
+  {q:"Nguyễn Ái Quốc hoạt động ở Quảng Châu năm?",a:["1923","1924","1925","1926"],c:2},
+  {q:"Việt Nam Quang phục hội thành lập năm?",a:["1910","1911","1912","1913"],c:2},
+  {q:"Phong trào Đông Du kết thúc năm?",a:["1907","1908","1909","1910"],c:1},
+  {q:"Phan Châu Trinh sang Pháp năm?",a:["1910","1911","1912","1913"],c:1},
+  {q:"Nguyễn Ái Quốc đọc Luận cương của ai?",a:["Mác","Lênin","Stalin","Trotsky"],c:1},
+  {q:"Đảng Cộng sản Việt Nam thành lập năm?",a:["1929","1930","1931","1932"],c:1},
+  {q:"Chủ tịch Hồ Chí Minh mất năm?",a:["1967","1968","1969","1970"],c:2},
+  {q:"Hội nghị hợp nhất Đảng diễn ra ở?",a:["Bắc Kinh","Hồng Kông","Quảng Châu","Paris"],c:1},
+  {q:"Nguyễn Ái Quốc lấy tên Hồ Chí Minh năm?",a:["1940","1941","1942","1943"],c:2},
+  {q:"Việt Nam bình thường hóa quan hệ với Mỹ năm?",a:["1993","1994","1995","1996"],c:2},
+  {q:"Vì sao Nguyễn Ái Quốc chọn con đường cách mạng vô sản?",a:["Do Lênin chỉ ra con đường giải phóng dân tộc","Do Pháp gợi ý","Do Nhật giúp","Do Trung Quốc giúp"],c:0},
+  {q:"Ý nghĩa lớn nhất của việc tìm ra con đường cứu nước là?",a:["Giải quyết khủng hoảng đường lối","Được nhiều tiền","Được nổi tiếng","Có thêm đồng minh"],c:0},
+  {q:"Vì sao phong trào Đông Du thất bại?",a:["Nhật trục xuất du học sinh","Thiếu tiền","Không có lãnh đạo","Do dân không ủng hộ"],c:0},
+  {q:"Mục tiêu của Phan Châu Trinh là gì?",a:["Cải cách đất nước","Đánh Pháp bằng vũ lực","Theo Nhật","Theo Mỹ"],c:0},
+  {q:"Tại sao Nguyễn Ái Quốc gửi yêu sách năm 1919?",a:["Đòi quyền tự do dân chủ","Xin viện trợ","Xin độc lập ngay","Xin làm thuộc địa"],c:0},
+  {q:"Điểm khác nhau giữa Phan Bội Châu và Phan Châu Trinh?",a:["Một người bạo động một người cải cách","Cả hai giống nhau","Đều theo Nhật","Đều theo Pháp"],c:0},
+  {q:"Vì sao phải thành lập Đảng Cộng sản?",a:["Lãnh đạo cách mạng","Có thêm tiền","Có thêm quân","Để nổi tiếng"],c:0},
+  {q:"Ý nghĩa của Hiệp định Genève?",a:["Chấm dứt chiến tranh Đông Dương","Chia đất nước","Mỹ thắng","Pháp thắng"],c:0},
+  {q:"Hiệp định Paris có ý nghĩa gì?",a:["Mỹ rút quân","Pháp quay lại","Việt Nam chia đôi","Chiến tranh tiếp tục"],c:0},
+  {q:"Vai trò của đối ngoại trong chiến tranh?",a:["Tìm sự ủng hộ quốc tế","Chỉ để giao lưu","Chỉ để buôn bán","Không quan trọng"],c:0},
+  {q:"Nếu không có đối ngoại Việt Nam có thể?",a:["Bị cô lập","Mạnh hơn","Không thay đổi","Giàu hơn"],c:0},
+  {q:"Quan hệ quốc tế giúp Việt Nam?",a:["Nhận ủng hộ","Không ảnh hưởng","Chỉ du lịch","Chỉ học tập"],c:0},
+  {q:"ASEAN giúp Việt Nam?",a:["Hợp tác kinh tế","Đánh nhau","Cấm vận","Không tác dụng"],c:0},
+  {q:"Hội nhập quốc tế giúp?",a:["Phát triển kinh tế","Chiến tranh","Cô lập","Nghèo hơn"],c:0},
+  {q:"Quan hệ với Mỹ giúp Việt Nam?",a:["Phát triển kinh tế","Chiến tranh","Bị cô lập","Không thay đổi"],c:0},
+  {q:"Ngoại giao giúp bảo vệ?",a:["Chủ quyền","Tiền","Nhà","Xe"],c:0},
+  {q:"Hội nhập giúp sinh viên?",a:["Cơ hội học tập","Không có gì","Chiến tranh","Bị hạn chế"],c:0},
+  {q:"Đối ngoại giúp doanh nghiệp?",a:["Xuất khẩu","Chiến tranh","Cấm vận","Không ảnh hưởng"],c:0},
+  {q:"Ngoại giao giúp hòa bình?",a:["Có","Không","Chỉ đôi khi","Không chắc"],c:0},
+  {q:"Quan hệ quốc tế giúp?",a:["Hợp tác","Chiến tranh","Cô lập","Xung đột"],c:0},
+  {q:"Hợp tác quốc tế giúp?",a:["Phát triển","Chiến tranh","Nghèo hơn","Không đổi"],c:0},
+  {q:"Quan hệ ASEAN giúp?",a:["Thương mại","Chiến tranh","Cấm vận","Không"],c:0},
+  {q:"Ngoại giao giúp giải quyết?",a:["Tranh chấp hòa bình","Chiến tranh","Bạo lực","Không"],c:0},
+  {q:"Việt Nam tham gia WTO giúp?",a:["Thương mại","Chiến tranh","Cấm vận","Không"],c:0},
+  {q:"Hội nhập giúp Việt Nam?",a:["Phát triển","Cô lập","Chiến tranh","Không"],c:0},
+  {q:"Nếu không có Nguyễn Ái Quốc tìm ra con đường cách mạng?",a:["Phong trào có thể bế tắc lâu hơn","Việt Nam giàu hơn","Chiến tranh ít hơn","Không thay đổi"],c:0},
+  {q:"Nếu không có đối ngoại trong kháng chiến?",a:["Việt Nam khó thắng","Việt Nam mạnh hơn","Không ảnh hưởng","Chiến tranh nhanh"],c:0},
+  {q:"Nếu Việt Nam không hội nhập quốc tế?",a:["Kinh tế chậm phát triển","Giàu hơn","Không đổi","Chiến tranh"],c:0},
+  {q:"Vai trò lớn nhất của Hồ Chí Minh?",a:["Lãnh đạo cách mạng","Làm kinh tế","Xây nhà","Phát minh"],c:0},
+  {q:"Bài học lớn nhất từ đối ngoại Việt Nam?",a:["Hợp tác quốc tế quan trọng","Không cần bạn bè","Chỉ tự lực","Đóng cửa"],c:0}
 ]
 
-
-// random câu hỏi
-questions.sort(()=>Math.random()-0.5)
-
-let current=0
-let score=0
-let wrong=0
-let time=20
+// ===== BIẾN GAME =====
+let current = 0
+let score = 0
+let wrong = 0
+let time = 20
 let timer
+let fear = 50
+let watch = 0
 
-// trợ giúp 1 lần
-let helpAnswer=true
-let helpAudience=true
-let helpCall=true
-let helpSkip=true
+// ===== THANH TRẠNG THÁI =====
+function updateBars(){
+  fear = Math.max(0, Math.min(100, fear))
+  watch = Math.max(0, Math.min(100, watch))
 
+  document.getElementById("fearNum").innerText = fear
+  document.getElementById("watchNum").innerText = watch
+  document.getElementById("fearBarFill").style.width = fear + "%"
+  document.getElementById("watchBarFill").style.width = watch + "%"
+
+  document.getElementById("fearBarFill").style.background =
+    fear > 70 ? "#ff0000" : fear > 40 ? "#ff9900" : "#00cc00"
+  document.getElementById("watchBarFill").style.background =
+    watch > 70 ? "#ff0000" : watch > 40 ? "#ff9900" : "#ffff00"
+
+  // Nút hỏi thầy chỉ bật khi sợ = 0
+  let btnT = document.getElementById("btnTeacher")
+  btnT.style.opacity = fear == 0 ? "1" : "0.4"
+  btnT.disabled = fear != 0
+
+  // Thua nếu độ để ý = 100
+  if(watch >= 100){
+    clearInterval(timer)
+    setTimeout(() => {
+      showMsg("💀 Thầy cô phát hiện bạn gian lận!\nBị đánh dấu bài - THUA LUÔN!", () => endGame())
+    }, 300)
+  }
+}
+
+function changeFear(v){ fear += v; updateBars() }
+function changeWatch(v){ watch += v; updateBars() }
+
+// ===== NHẠC =====
+var isUserMuted = false
+
+document.addEventListener("click", function(e){
+  if(e.target.closest("#controls")) return
+  var music = document.getElementById("bgMusic")
+  if(music.paused && !isUserMuted) music.play()
+})
+
+function toggleMusic(){
+  var music = document.getElementById("bgMusic")
+  var btn = document.querySelector("#controls button")
+  if(!music.paused){
+    music.pause(); isUserMuted = true; btn.innerText = "🔇 Bật nhạc"
+  } else {
+    music.play(); isUserMuted = false; btn.innerText = "🔊 Tắt nhạc"
+  }
+}
+
+// ===== ĐỔI NỀN =====
+var backgrounds = [
+  "linear-gradient(135deg, #8B0000, #cc0000, #FFD700)",
+  "linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)",
+  "linear-gradient(135deg, #134e5e, #71b280)",
+  "linear-gradient(135deg, #f8b500, #fc5c7d)",
+]
+var bgIndex = 0
+function changeBg(){
+  bgIndex = (bgIndex + 1) % backgrounds.length
+  document.body.style.background = backgrounds[bgIndex]
+  document.body.style.backgroundSize = "400% 400%"
+}
+
+// ===== GAME =====
 function startGame(){
-
-document.getElementById("start").style.display="none"
-document.getElementById("quiz").style.display="block"
-
-document.getElementById("bgMusic").play()
-
-loadQuestion()
-
+  questions.sort(() => Math.random() - 0.5)
+  document.getElementById("start").style.display = "none"
+  document.getElementById("quiz").style.display = "block"
+  document.getElementById("statusBars").style.cssText = "display:flex; flex-direction:column;"
+  updateBars()
+  loadQuestion()
 }
 
 function loadQuestion(){
+  time = 20
+  let q = questions[current]
+  let answers = [...q.a]
+  answers.sort(() => Math.random() - 0.5)
 
+  let options = ""
+  answers.forEach(opt => {
+    let isCorrect = (opt === q.a[q.c])
+    options += `<div class="option" onclick="answer(${isCorrect})">${opt}</div>`
+  })
 
-let q=questions[current]
-
-let answers=q.a.map((text,i)=>({text,correct:i==q.c}))
-
-answers.sort(()=>Math.random()-0.5)
-
-let options=""
-
-answers.forEach((opt)=>{
-
-options+=`<div class="option" onclick="answer(${opt.correct})">${opt.text}</div>`
-
-})
-
-document.getElementById("question").innerText=q.q
-
-document.getElementById("options").innerHTML=options
-
-startTimer()
-
+  document.getElementById("question").innerText = q.q
+  document.getElementById("options").innerHTML = options
+  startTimer()
 }
 
 function startTimer(){
-
-clearInterval(timer)
-
-timer=setInterval(()=>{
-
-time--
-
-document.getElementById("timer").innerText=time
-
-document.body.style.background=
-`rgb(${255-time*10},${255-time*10},${255-time*10})`
-
-if(time<=0){
-
-  clearInterval(timer);
-  gameOver();
-
-
-}
-
-},1000)
-
+  clearInterval(timer)
+  timer = setInterval(() => {
+    time--
+    document.getElementById("timer").innerText = time
+    if(time <= 0){
+      clearInterval(timer)
+      changeFear(+20)
+      changeWatch(+5)
+      gameOver()
+    }
+  }, 1000)
 }
 
 function answer(correct){
-
   if(correct){
     score++
-    document.getElementById("correctSound").play()
+    changeFear(-10)
+    changeWatch(-5)
 
-    // Cộng 2s, tối đa 20s
-    time = Math.min(time + 8, 100);
-    document.getElementById("timer").innerText = time;
+    // Thưởng +8s
+    time = Math.min(time + 8, 20)
+    document.getElementById("timer").innerText = time
 
-    // Hiện thông báo +8s
-    let bonus = document.createElement("div");
-    bonus.innerText = "+2 giây! ⏰";
+    // Hiện thông báo
+    let bonus = document.createElement("div")
+    bonus.innerText = "+8 giây! ⏰"
     bonus.style.cssText = `
       position:fixed; top:20px; left:50%;
       transform:translateX(-50%);
@@ -489,115 +541,182 @@ function answer(correct){
       padding:10px 20px; border-radius:20px;
       font-size:20px; font-weight:bold;
       z-index:9999; animation: fadeOut 1.5s forwards;
-    `;
-    document.body.appendChild(bonus);
-    setTimeout(() => bonus.remove(), 1500);
+    `
+    document.body.appendChild(bonus)
+    setTimeout(() => bonus.remove(), 1500)
 
     nextQuestion()
 
-  }else{
+  } else {
     wrong++
-    document.getElementById("wrongSound").play()
-    document.getElementById("wrong").innerText="Sai: "+wrong+" / 7"
+    changeFear(+15)
+    changeWatch(+5)
 
-    // Trừ 3s, tối thiểu 5s
-    time = Math.max(time - 4, 5);
-    document.getElementById("timer").innerText = time;
+    // Trừ 2s
+    time = Math.max(time - 2, 5)
+    document.getElementById("timer").innerText = time
 
-    // Hiện đáp án đúng
-    let opts = document.querySelectorAll(".option");
+    // Tô xanh đáp án đúng
+    let opts = document.querySelectorAll(".option")
     opts.forEach(opt => {
       if(opt.onclick.toString().includes("true")){
-        opt.style.background = "#4CAF50";
-        opt.style.color = "white";
+        opt.style.background = "#4CAF50"
+        opt.style.color = "white"
       }
-      opt.style.pointerEvents = "none";
-    });
+      opt.style.pointerEvents = "none"
+    })
 
-    if(wrong>=7){
-      clearInterval(timer);
-      setTimeout(() => {
-        alert("Bạn đã sai 7 lần. Game Over!")
-        endGame()
-      }, 2000);
-      return
-    }
-
-    clearInterval(timer);
-    setTimeout(() => {
-      nextQuestion();
-    }, 2000);
+    clearInterval(timer)
+    setTimeout(() => nextQuestion(), 2000)
   }
 }
 
 function nextQuestion(){
   clearInterval(timer)
   current++
-  if(current>=questions.length){
+  if(current >= questions.length){
     endGame()
-  }else{
+  } else {
     loadQuestion()
   }
 }
 
-function endGame(){
-  document.getElementById("quiz").style.display="none"
-  document.getElementById("result").innerText=
-  "Bạn đúng "+score+" câu | Sai "+wrong+" lần"
-}
-
-function showAnswer(){
-  if(!helpAnswer){
-    alert("Bạn đã dùng trợ giúp này rồi")
-    return
-  }
-  helpAnswer=false
-  alert("Đáp án đúng: "+questions[current].a[questions[current].c])
-}
-
-function helpAudienceFunc(){
-  if(!helpAudience){
-    alert("Bạn đã dùng trợ giúp này rồi")
-    return
-  }
-  helpAudience=false
-  let correct=questions[current].c
-  let percent=[0,0,0,0]
-  percent[correct]=Math.floor(Math.random()*30)+40
-  for(let i=0;i<4;i++){
-    if(i!=correct){
-      percent[i]=Math.floor(Math.random()*20)
+function gameOver(){
+  let opts = document.querySelectorAll(".option")
+  opts.forEach(opt => {
+    if(opt.onclick.toString().includes("true")){
+      opt.style.background = "#4CAF50"
+      opt.style.color = "white"
     }
-  }
-  alert(
-    "A:"+percent[0]+"%\n"+
-    "B:"+percent[1]+"%\n"+
-    "C:"+percent[2]+"%\n"+
-    "D:"+percent[3]+"%"
-  )
+    opt.style.pointerEvents = "none"
+  })
+  setTimeout(() => {
+    showMsg("⏰ Hết giờ! Qua câu tiếp!", () => nextQuestion())
+  }, 1500)
 }
 
-function callFriend(){
-  if(!helpCall){
-    alert("Bạn đã dùng trợ giúp này rồi")
-    return
-  }
-  helpCall=false
-  let correct=questions[current].c
-  let guess=Math.random()<0.875?correct:Math.floor(Math.random()*4)
-  alert("Người thân đã tra GG và có đáp án: "+questions[current].a[guess])
+function endGame(){
+  clearInterval(timer)
+  document.getElementById("quiz").style.display = "none"
+  document.getElementById("statusBars").style.display = "none"
+  document.getElementById("resultScreen").style.display = "block"
+
+  let name = document.getElementById("player") ? document.getElementById("player").value || "Bạn" : "Bạn"
+  let pct = Math.round(score / questions.length * 100)
+
+  document.getElementById("resultTitle").innerText =
+    pct >= 80 ? "🎉 Xuất sắc!" : pct >= 50 ? "👍 Khá tốt!" : "😅 Cố gắng hơn nhé!"
+  document.getElementById("result").innerText =
+    `${name} đúng ${score}/${questions.length} câu (${pct}%) | Sai ${wrong} lần`
 }
 
-function skip(){
-  if(!helpSkip){
-    alert("Bạn đã dùng trợ giúp này rồi")
-    return
+// ===== POPUP THÔNG BÁO =====
+function showMsg(text, callback){
+  document.getElementById("msgText").innerHTML = text.replace(/\n/g, "<br>")
+  document.getElementById("msgBox").style.display = "block"
+  document.getElementById("msgOverlay").style.display = "block"
+  window._msgCallback = callback || null
+}
+
+function closeMsg(){
+  document.getElementById("msgBox").style.display = "none"
+  document.getElementById("msgOverlay").style.display = "none"
+  if(window._msgCallback){ window._msgCallback(); window._msgCallback = null }
+}
+
+// ===== TRỢ GIÚP =====
+let helpTeacher = true
+
+// 😰 Hỏi thầy cô (1 lần, cần sợ = 0)
+function askTeacher(){
+  if(!helpTeacher){ showMsg("Đã dùng rồi! ❌"); return }
+  if(fear > 0){ showMsg("😰 Bạn đang sợ quá!\nGiảm nỗi sợ xuống 0 mới dám hỏi thầy!"); return }
+
+  helpTeacher = false
+  document.getElementById("btnTeacher").style.opacity = "0.4"
+  document.getElementById("btnTeacher").disabled = true
+
+  let rand = Math.random()
+  if(rand < 0.8){
+    changeFear(+30)
+    clearInterval(timer)
+    time = Math.max(time - 20, 5)
+    document.getElementById("timer").innerText = time
+    showMsg("😡 Thầy cô nổi giận:\n\n\"Em đang làm gì vậy?! Tự làm đi!\"\n\n-20 giây ⏰ | +30 nỗi sợ 😱", () => startTimer())
+  } else {
+    let ans = questions[current].a[questions[current].c]
+    showMsg("😊 Thầy cô thì thầm:\n\n\"Lần này thầy giúp, lần sau tự làm!\"\nĐáp án: <b>" + ans + "</b>")
   }
-  helpSkip=false
-  nextQuestion()
+}
+
+// 📜 Lật phao (nhiều lần, +độ để ý)
+function usePhao(){
+  if(watch >= 80){ showMsg("👀 Thầy cô đang nhìn chằm chằm!\nKhông dám lật phao!"); return }
+
+  let rand = Math.random()
+  if(rand < 0.7){
+    changeWatch(+20)
+    let ans = questions[current].a[questions[current].c]
+    showMsg("📜 Lật phao thành công!\n\nĐáp án: <b>" + ans + "</b>\n\n+20 độ để ý 👀")
+  } else if(rand < 0.9){
+    changeWatch(+50)
+    showMsg("💀 Thầy cô bắt được bạn lật phao!\n+50 độ để ý 👀")
+  } else {
+    changeWatch(+10)
+    showMsg("📜 Chữ quá nhỏ không đọc được! 😭\n+10 độ để ý 👀")
+  }
+}
+
+// 🤖 Hỏi AI (nhiều lần, +độ để ý)
+function askAI(){
+  changeWatch(+15)
+  let rand = Math.random()
+  let ans = questions[current].a[questions[current].c]
+
+  if(rand < 0.9){
+    showMsg("🤖 AI trả lời:\n\n\"Theo phân tích của tôi: <b>" + ans + "</b>\"\n\n+15 độ để ý 👀")
+  } else {
+    let wrongArr = []
+    for(let i=0; i<4; i++) if(i != questions[current].c) wrongArr.push(i)
+    let wrongAns = questions[current].a[wrongArr[Math.floor(Math.random()*wrongArr.length)]]
+    showMsg("🤖 AI bị ảo giác:\n\n\"Theo phân tích của tôi: <b>" + wrongAns + "</b>\"\n(AI đôi khi cũng sai 😅)\n\n+15 độ để ý 👀")
+  }
+}
+
+// 👀 Quay cóp (nhiều lần, +độ để ý)
+function quayCop(){
+  if(watch >= 60){ showMsg("👀 Thầy cô đang để ý bạn!\nKhông dám quay cóp!"); return }
+
+  let rand = Math.random()
+  if(rand < 0.75){
+    changeWatch(+25)
+    let ans = questions[current].a[questions[current].c]
+    showMsg("👀 Quay cóp thành công!\n\nBạn bên cạnh làm: <b>" + ans + "</b>\n+25 độ để ý 👀")
+  } else {
+    changeWatch(+40)
+    showMsg("😱 Bị bắt quay cóp!\n\nThầy cô nhìn thấy hết!\n+40 độ để ý 👀")
+  }
+}
+
+// 🧑 Hỏi đứa kế bên (nhiều lần, +độ để ý)
+function askNeighbor(){
+  changeWatch(+10)
+  let rand = Math.random()
+  let correct = questions[current].c
+
+  if(rand < 0.4){
+    let ans = questions[current].a[correct]
+    showMsg("🧑‍🤝‍🧑 Đứa kế bên thì thầm:\n\n\"Tao nghĩ là: <b>" + ans + "</b>\"\n(Trông tự tin 😏)\n\n+10 độ để ý 👀")
+  } else if(rand < 0.8){
+    let wrongArr = []
+    for(let i=0; i<4; i++) if(i != correct) wrongArr.push(i)
+    let wrongAns = questions[current].a[wrongArr[Math.floor(Math.random()*wrongArr.length)]]
+    showMsg("🧑‍🤝‍🧑 Đứa kế bên thì thầm:\n\n\"Tao đoán là: <b>" + wrongAns + "</b>\"\n(Trông không chắc 😅)\n\n+10 độ để ý 👀")
+  } else {
+    showMsg("🧑‍🤝‍🧑 Đứa kế bên thì thầm:\n\n\"Ơ tao cũng không biết 😭\nThôi tự làm đi!\"\n\n+10 độ để ý 👀")
+  }
 }
 
 </script>
-
 </body>
 </html>
