@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ôn Tập Lịch Sử 12 – Đối Ngoại & Hồ Chí Minh</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --gold: #d4a017;
+    --dark: #1a1208;
+    --cream: #fdf6e3;
+    --paper: #f5ead0;
+    --ink: #2c1a0e;
+    --accent: #8b2500;
+    --success: #2e7d32;
+    --wrong: #b71c1c;
+    --neutral: #5d4037;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: var(--dark);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === BACKGROUND PATTERN === */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(212,160,23,0.03) 40px, rgba(212,160,23,0.03) 41px),
+      repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(192,57,43,0.03) 40px, rgba(192,57,43,0.03) 41px);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* === HEADER === */
+  header {
+    position: relative; z-index: 10;
+    background: linear-gradient(135deg, #7b0000 0%, #c0392b 40%, #8b2500 70%, #4a0000 100%);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  }
+
+  .star-row {
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 0.5rem;
+    margin-bottom: 0.6rem;
+    opacity: 0.9;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%,100%{opacity:0.7} 50%{opacity:1}
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: #fff;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+  }
+
+  header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  /* === SCORE BAR === */
+  #score-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--dark);
+    border-bottom: 2px solid var(--gold);
+    padding: 0.7rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  .score-info {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .progress-wrap {
+    flex: 1;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #f9d342);
+    border-radius: 20px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  #reset-btn, #shuffle-btn {
+    background: transparent;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  #reset-btn:hover { background: var(--gold); color: var(--dark); }
+
+  #shuffle-btn.on {
+    background: var(--gold);
+    color: var(--dark);
+    font-weight: 700;
+  }
+  #shuffle-btn:hover:not(.on) { background: rgba(212,160,23,0.15); }
+
+  .shuffle-badge {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+    letter-spacing: 0.03em;
+  }
+
+  /* === LESSON TABS === */
+  .lesson-tabs {
+    position: relative; z-index: 5;
+    display: flex;
+    overflow-x: auto;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    padding: 0 0.5rem;
+    gap: 0.2rem;
+    scrollbar-width: none;
+  }
+  .lesson-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: rgba(253,246,227,0.5);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: var(--cream);
+  }
+
+  /* === MAIN CONTENT === */
+  main {
+    position: relative; z-index: 5;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .lesson-panel { display: none; }
+  .lesson-panel.active { display: block; }
+
+  /* === SECTION TITLE === */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--gold);
+    margin: 1.8rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title::before {
+    content: '❧';
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+
+  /* === QUESTION CARD === */
+  .q-card {
+    background: var(--paper);
+    border-radius: 12px;
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 1px solid rgba(212,160,23,0.2);
+    transition: transform 0.15s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(16px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .q-header {
+    background: linear-gradient(135deg, rgba(139,37,0,0.15), rgba(192,57,43,0.08));
+    padding: 0.9rem 1rem 0.75rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(212,160,23,0.15);
+  }
+
+  .q-num {
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .q-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* === SOURCE BLOCK === */
+  .q-source {
+    background: rgba(139,37,0,0.06);
+    border-left: 3px solid var(--gold);
+    margin: 0.5rem 1rem 0.2rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    color: var(--neutral);
+    font-style: italic;
+    line-height: 1.5;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* === OPTIONS === */
+  .q-options {
+    padding: 0.75rem 1rem 1rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .opt-btn {
+    width: 100%;
+    text-align: left;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1.5px solid rgba(139,37,0,0.2);
+    background: rgba(255,255,255,0.6);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    font-weight: 400;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--red);
+    background: rgba(192,57,43,0.08);
+    transform: translateX(3px);
+  }
+
+  .opt-btn.correct {
+    background: rgba(46,125,50,0.12);
+    border-color: var(--success);
+    color: #1b5e20;
+    font-weight: 600;
+  }
+
+  .opt-btn.wrong {
+    background: rgba(183,28,28,0.1);
+    border-color: var(--wrong);
+    color: #b71c1c;
+    text-decoration: line-through;
+    opacity: 0.8;
+  }
+
+  .opt-btn:disabled { cursor: default; transform: none !important; }
+
+  /* === TRUE/FALSE === */
+  .tf-list {
+    padding: 0.5rem 1rem 1rem;
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .tf-item {
+    background: rgba(255,255,255,0.55);
+    border: 1.5px solid rgba(139,37,0,0.15);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .tf-label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--red);
+    min-width: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tf-text {
+    font-size: 0.83rem;
+    line-height: 1.5;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .tf-btns {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .tf-btn {
+    padding: 0.28rem 0.75rem;
+    border-radius: 20px;
+    border: 1.5px solid;
+    font-size: 0.75rem;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .tf-btn.dung  { border-color: var(--success); color: var(--success); background: transparent; }
+  .tf-btn.sai   { border-color: var(--wrong);   color: var(--wrong);   background: transparent; }
+
+  .tf-btn.dung:hover:not(:disabled)  { background: var(--success); color: #fff; }
+  .tf-btn.sai:hover:not(:disabled)   { background: var(--wrong);   color: #fff; }
+
+  .tf-btn:disabled { cursor: default; }
+
+  .tf-btn.selected-correct { background: var(--success); color: #fff; }
+  .tf-btn.selected-wrong-pick { background: var(--wrong); color: #fff; }
+  .tf-btn.show-correct { background: var(--success); color: #fff; border-color: var(--success); }
+
+  .tf-result {
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+    font-weight: 600;
+  }
+  .tf-result.ok  { color: var(--success); }
+  .tf-result.bad { color: var(--wrong); }
+
+  /* === FEEDBACK === */
+  .feedback {
+    margin: 0 1rem 0.8rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: rgba(46,125,50,0.12); color: var(--success); border: 1px solid rgba(46,125,50,0.3); }
+  .feedback.bad { background: rgba(183,28,28,0.1);  color: var(--wrong);   border: 1px solid rgba(183,28,28,0.3); }
+
+  /* === LESSON SUMMARY === */
+  .lesson-score {
+    background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(192,57,43,0.1));
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--ink);
+  }
+
+  .lesson-score strong { color: var(--red); font-size: 1.1rem; }
+
+  /* === SCROLLBAR === */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="star-row">★ ★ ★ ★ ★</div>
+  <h1>Ôn Tập Lịch Sử 12<br>Chủ Đề 5 &amp; 6</h1>
+  <p>Đối ngoại Việt Nam • Hồ Chí Minh trong lịch sử</p>
+</header>
+
+<div id="score-bar">
+  <span class="score-info" id="score-label">0 / 0</span>
+  <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+  <button id="shuffle-btn" onclick="toggleShuffle()">🔀 Ngẫu nhiên</button>
+  <button id="reset-btn" onclick="resetAll()">↺ Làm lại</button>
+</div>
+
+<div class="lesson-tabs" id="lesson-tabs">
+  <button class="tab-btn active" onclick="switchLesson(0)">Bài 12</button>
+  <button class="tab-btn" onclick="switchLesson(1)">Bài 13</button>
+  <button class="tab-btn" onclick="switchLesson(2)">Bài 14</button>
+  <button class="tab-btn" onclick="switchLesson(3)">Bài 15</button>
+  <button class="tab-btn" onclick="switchLesson(4)">Bài 16</button>
+</div>
+
+<main id="main"></main>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const lessons = [
+// ---- BÀI 12 ----
+{
+  title: "Bài 12 – Đối ngoại trong đấu tranh giành độc lập (Đầu TK XX – 1945)",
+  mcq: [
+    { q: "Trong thời gian hoạt động tại Trung Quốc (1912), Phan Bội Châu tham gia thành lập tổ chức nào?", opts: ["Việt Nam Quang phục hội","Việt Nam Quốc Dân Đảng","Đông Á đồng minh","Hội Liên hiệp thuộc địa"], ans: 0 },
+    { q: "Hoạt động đối ngoại của Phan Châu Trinh (đầu TK XX) diễn ra ở quốc gia nào?", opts: ["Pháp","Liên Xô","Nhật Bản","Trung Quốc"], ans: 0 },
+    { q: "Trong những năm 1911–1922, hoạt động đối ngoại của Nguyễn Ái Quốc ở đâu?", opts: ["Pháp","Nhật Bản","Liên Xô","Trung Quốc"], ans: 0 },
+    { q: "Tại Pháp (1920), Nguyễn Ái Quốc tham gia sáng lập tổ chức nào?", opts: ["Đảng Cộng sản Pháp","Đảng Cộng sản Liên Xô","Việt Nam Quang phục hội","Tân Việt Cách mạng đảng"], ans: 0 },
+    { q: "Năm 1924, tại Quảng Châu, Nguyễn Ái Quốc liên lạc với lực lượng cách mạng khu vực nào?", opts: ["Đông Nam Á","Mĩ La-tinh","Bắc Phi","Tây Nam Á"], ans: 0 },
+    { q: "Hoạt động đối ngoại của Đảng CS Đông Dương (1930–1945) chủ yếu nhằm mục đích gì?", opts: ["Phục vụ đấu tranh chống thực dân, phát xít giành độc lập","Phục vụ quan hệ ngoại giao với các nước lớn","Tìm kiếm liên minh quân sự với cường quốc","Liên kết với các nước phương Tây chống đế quốc"], ans: 0 },
+    { q: "Nội dung nào KHÔNG đúng về hoạt động đối ngoại của Đảng CS Đông Dương (1930–1945)?", opts: ["Tham gia các khối quân sự chống phát xít","Củng cố quan hệ với Đảng CS Trung Quốc","Tổ chức nhiều hoạt động ủng hộ Liên Xô","Liên lạc với phong trào chống quân phiệt Nhật"], ans: 0 },
+    { q: "Trong CTTG II (1939–1945), Đảng CS Đông Dương đưa ra chủ trương đối ngoại nào?", opts: ["Đứng về phía phe đồng minh chống phát xít","Liên minh quân sự với các quốc gia Đông Nam Á","Triển khai hoạt động giúp đỡ các nước bại trận","Thành lập liên minh chống chiến tranh ở Đông Dương"], ans: 0 },
+    { q: "Phan Bội Châu thành lập Việt Nam Quang phục hội (1912) nhằm mục đích gì?", opts: ["Đánh Pháp giành độc lập, thành lập nước Cộng hòa Dân quốc Việt Nam","Đánh Mĩ giành độc lập, thành lập nước Cộng hòa Dân quốc Việt Nam","Đánh Pháp giành độc lập, thành lập nước Việt Nam Dân chủ Cộng hòa","Tiến hành cải cách đất nước, lập ra nhà nước Việt Nam Dân chủ Cộng hòa"], ans: 0 },
+    { q: "Hoạt động của Phan Châu Trinh tại Pháp (đầu TK XX) nhằm mục đích gì?", opts: ["Vận động cải cách cho Việt Nam","Thiết lập quan hệ với nước Pháp","Nhờ Pháp để đánh đuổi Nhật","Vận động trao trả độc lập cho Việt Nam"], ans: 0 },
+    { q: "Mục đích của Hội Liên hiệp thuộc địa (Nguyễn Ái Quốc sáng lập, 1921) là gì?", opts: ["Đoàn kết các lực lượng cách mạng chống chủ nghĩa thực dân","Liên minh với nước tư bản để chống thực dân","Lãnh đạo phong trào công nhân ở các nước tư bản","Đào tạo thanh niên thuộc địa đưa về nước hoạt động"], ans: 0 },
+    { q: "Hoạt động đối ngoại của Nguyễn Ái Quốc ở Liên Xô (1923–1924) xác lập mối quan hệ giữa cách mạng Việt Nam với?", opts: ["Quốc tế Cộng sản và cách mạng thế giới","Phong trào cách mạng ở Mỹ La-tinh","Cách mạng Lào và các nước Đông Âu","Hệ thống các nước xã hội chủ nghĩa"], ans: 0 },
+    { q: "Phong trào Đông Du (1905–1908) để lại bài học gì cho Việt Nam hiện nay?", opts: ["Tranh thủ ngoại lực, phát huy sức mạnh nội lực","Nói đi đôi với làm, không ngừng rèn luyện","Vừa học vừa làm phụng sự gia đình và xã hội","Dám nói, dám làm và dám chịu trách nhiệm"], ans: 0 },
+    { q: "Hoạt động đối ngoại của Nguyễn Ái Quốc (1911–1930) để lại bài học gì cho thế hệ trẻ?", opts: ["Nghị lực và bản lĩnh, rèn luyện ý chí quyết tâm","Coi ngoại lực là động lực chủ yếu để phát triển","Kết hợp tiến bộ nhân loại với giá trị bản thân","Đề cao cá nhân và vươn tầm ảnh hưởng ra thế giới"], ans: 0 },
+  ],
+  tf: [
+    {
+      source: "Phan Bội Châu là người đã khởi xướng phong trào Đông Du, mở đầu mối quan hệ Việt Nam – Nhật Bản đầu TK XX. Mục đích: đưa thanh niên ưu tú sang học tập tại Tokyo, đào tạo nhân tài, tiến kịp văn minh thế giới.",
+      items: [
+        { label: "a", text: "Phan Bội Châu là người khởi đầu cho mối quan hệ giữa Việt Nam với Nhật Bản trong những năm đầu của thế kỉ XX.", ans: true },
+        { label: "b", text: "Mục đích của phong trào Đông Du là đưa thanh niên Việt Nam sang học tập ở Nhật Bản sau đó đưa về nước hoạt động đấu tranh giành độc lập.", ans: true },
+        { label: "c", text: "Chủ trương cứu nước của Phan Bội Châu là bất bạo động, dựa vào Nhật Bản để vận động cải cách cứu nước.", ans: false },
+        { label: "d", text: "Chủ trương cứu nước của Phan Bội Châu đặt nền tảng cho Nguyễn Ái Quốc lựa chọn con đường cứu nước đúng đắn sau này.", ans: true },
+      ]
+    },
+    {
+      source: "1930–1945: Đảng CS Đông Dương nhằm xác lập quan hệ với các Đảng cộng sản và phong trào vô sản thế giới. Mặt trận Việt Minh và Hồ Chí Minh tiếp xúc với người Mỹ, tìm kiếm giải pháp cho vấn đề Đông Dương.",
+      items: [
+        { label: "a", text: "Hoạt động đối ngoại của Đảng CS Đông Dương (1930–1945) nhằm mở rộng quan hệ với lực lượng phát xít ở Đông Nam Á.", ans: false },
+        { label: "b", text: "Quan điểm đối ngoại của Đảng CS Đông Dương thời CTTG II là đứng về phe Đồng minh chống phát xít.", ans: true },
+        { label: "c", text: "Mặt trận Việt Minh và Hồ Chí Minh tích cực tiếp cận người Mĩ nhằm tìm kiếm giải pháp hòa bình cho các quốc gia Đông Nam Á.", ans: false },
+        { label: "d", text: "Mục tiêu cao nhất trong hoạt động đối ngoại của Đảng CS Đông Dương (1930–1945) là phục vụ cuộc đấu tranh giải phóng dân tộc.", ans: true },
+      ]
+    },
+  ]
+},
+
+// ---- BÀI 13 ----
+{
+  title: "Bài 13 – Đối ngoại kháng chiến chống Pháp (1945–1954) & chống Mỹ (1954–1975)",
+  mcq: [
+    { q: "Năm 1950, Chính phủ VNDCCH thiết lập quan hệ ngoại giao với quốc gia nào?", opts: ["Trung Quốc","Nhật Bản","Cam-pu-chia","Hàn Quốc"], ans: 0 },
+    { q: "Ngay sau Cách mạng tháng Tám 1945, hoạt động đối ngoại nổi bật của Chính phủ VNDCCH là gì?", opts: ["Gửi công hàm đến Liên hợp quốc","Gửi yêu cầu ngừng bắn đến Pháp","Yêu cầu Pháp trao trả độc lập","Thành lập Liên minh Việt-Miên-Lào"], ans: 0 },
+    { q: "Năm 1946, hoạt động đối ngoại nổi bật của Chính phủ VNDCCH với Pháp là gì?", opts: ["Ký Hiệp định Sơ bộ","Ký Hiệp ước Hác-măng","Ký Định ước Hen-xin-ki","Ký Hiệp ước Pa-tơ-nốt"], ans: 0 },
+    { q: "Năm 1946, hoạt động đối ngoại nổi bật khác của Chính phủ VNDCCH với Pháp là?", opts: ["Ký Bản Tạm ước Việt-Pháp","Ký Hiệp ước Hác-măng","Ký Định ước Hen-xin-ki","Ký Hiệp ước Pa-tơ-nốt"], ans: 0 },
+    { q: "Năm 1951, Chính phủ VNDCCH có hoạt động đối ngoại nào?", opts: ["Thành lập liên minh nhân dân Việt-Miên-Lào","Thành lập liên minh các quốc gia Đông Nam Á","Trở thành đối tác chiến lược của Trung Quốc","Tham gia thành lập Hội đồng tương trợ kinh tế (SEV)"], ans: 0 },
+    { q: "Giai đoạn 1947–1949, Chính phủ VNDCCH thực hiện hoạt động đối ngoại nào?", opts: ["Mở cơ quan đại diện ở một số nước châu Á","Thành lập liên minh với Lào và Cam-pu-chia","Thiết lập quan hệ ngoại giao với Trung Quốc","Ký với đại diện Pháp Hiệp định Giơ-ne-vơ"], ans: 0 },
+    { q: "Giai đoạn 1950–1954, Chính phủ VNDCCH thực hiện hoạt động đối ngoại nào?", opts: ["Thiết lập quan hệ ngoại giao với Trung Quốc và Liên Xô","Thiết lập quan hệ với tất cả các nước trên thế giới","Đàm phán và ký Hiệp định Pa-ri","Chuyển sang vừa đánh vừa đàm với Pháp"], ans: 0 },
+    { q: "Một trong những chính sách đối ngoại của Đảng và Chính phủ VNDCCH trong kháng chiến chống Mỹ (1954–1975) là?", opts: ["Củng cố, phát triển quan hệ với các nước xã hội chủ nghĩa","Bình thường hóa quan hệ với Trung Quốc và Ấn Độ","Hợp tác toàn diện với Nhật Bản, Hàn Quốc và Pháp","Củng cố, phát triển quan hệ với các nước tư bản"], ans: 0 },
+    { q: "Điều nào KHÔNG đúng về bối cảnh hoạt động đối ngoại của Chính phủ VNDCCH sau 2-9-1945?", opts: ["Xu thế hòa hoãn Đông-Tây trên thế giới đã xuất hiện","Hệ thống xã hội chủ nghĩa dần hình thành","Việt Nam chưa thoát khỏi tình thế bị bao vây, cô lập","Việt Nam chưa được quốc gia nào đặt quan hệ ngoại giao"], ans: 0 },
+    { q: "Hoạt động đối ngoại từ 2-9-1945 đến 19-12-1946 của Chính phủ VNDCCH có tác dụng gì?", opts: ["Tránh được cùng lúc phải đối phó với nhiều kẻ thù","Nhận được viện trợ của Trung Quốc và Liên Xô","Giúp Việt Nam thoát khỏi tình thế bị bao vây, cô lập","Giúp Việt Nam xây dựng thành công chủ nghĩa xã hội"], ans: 0 },
+    { q: "Ký Hiệp định Giơ-ne-vơ (1954) có ý nghĩa gì?", opts: ["Lần đầu tiên ngoại giao Việt Nam đàm phán đa phương với các nước lớn","Hợp tác đa phương giữa Việt Nam với các cường quốc được thiết lập","Quan hệ ngoại giao Việt Nam–Pháp nâng lên tầm cao mới","Việt Nam trở thành thành viên ASEAN"], ans: 0 },
+    { q: "Đỉnh cao thắng lợi ngoại giao của Việt Nam trong kháng chiến chống Mỹ là sự kiện nào?", opts: ["Hiệp định Pa-ri được ký kết (1973)","Hiệp định Giơ-ne-vơ được ký kết (1954)","Mĩ thiết lập quan hệ ngoại giao với Việt Nam","Việt Nam gia nhập Liên Hợp quốc"], ans: 0 },
+    { q: "Trong kháng chiến chống Mỹ (1954–1975), ngoại giao VNDCCH đạt thành tựu nào?", opts: ["Hình thành mặt trận nhân dân thế giới ủng hộ kháng chiến","Thành lập liên minh chiến đấu với các nước Đông Nam Á","Được Trung Quốc, Liên Xô công nhận và đặt quan hệ ngoại giao","Trở thành thành viên chính thức của Liên hợp quốc"], ans: 0 },
+    { q: "Điểm tương đồng của đấu tranh ngoại giao chống Pháp (1945–1954) và chống Mỹ (1954–1975) là?", opts: ["Đấu tranh ngoại giao có quan hệ chặt chẽ với đấu tranh chính trị","Đấu tranh ngoại giao luôn đi trước mở đường cho đấu tranh quân sự","Mặt trận ngoại giao được hình thành ngay từ đầu cuộc kháng chiến","Hoạt động ngoại giao chịu sự chi phối hoàn toàn của hoạt động quân sự"], ans: 0 },
+    { q: "Điểm tương đồng giữa Hiệp định Giơ-ne-vơ (1954) và Hiệp định Pa-ri (1973) là?", opts: ["Việt Nam thể hiện tính tự chủ và tự quyết trong đấu tranh ngoại giao","Các nước đế quốc phải công nhận tính thống nhất của Việt Nam","Là kết quả của các cuộc đàm phán diễn ra nhanh chóng, hài hòa","Là mốc đánh dấu kết thúc các cuộc chiến tranh xâm lược của kẻ thù"], ans: 0 },
+  ],
+  tf: [
+    {
+      source: "Tháng 9-1947, Hồ Chí Minh khẳng định: Chính sách đối ngoại là 'làm bạn với tất cả mọi nước dân chủ và không gây thù oán với một ai'. Trung ương Đảng chủ trương liên minh với các dân tộc bị áp bức và vô sản thế giới, đặc biệt là các nước lân cận.",
+      items: [
+        { label: "a", text: "Chủ tịch Hồ Chí Minh khẳng định chính sách đối ngoại là 'làm bạn với tất cả mọi nước dân chủ và không gây thù oán với một ai'.", ans: true },
+        { label: "b", text: "Trung ương Đảng chủ trương liên minh với các nước đế quốc chủ nghĩa để củng cố công cuộc cách mạng ở Đông Dương.", ans: false },
+        { label: "c", text: "Chính sách đối ngoại sau Cách mạng tháng Tám 1945 chú trọng xây dựng quan hệ hòa bình và hợp tác với các nước dân chủ.", ans: true },
+        { label: "d", text: "Việt Nam cần tăng cường liên minh với các dân tộc bị áp bức và giai cấp vô sản quốc tế, đặc biệt là các nước láng giềng.", ans: true },
+      ]
+    },
+    {
+      source: "Theo Hồ Chí Minh, đấu tranh quân sự và chính trị ở miền Nam là nhân tố chủ yếu quyết định thắng lợi, làm cơ sở thắng lợi ngoại giao. Người căn dặn đoàn đàm phán Pa-ri (5-1968): 'phải biết tận dụng thắng lợi trên chiến trường để làm vốn đàm phán, phối hợp quân sự với ngoại giao, vừa đánh vừa đàm'.",
+      items: [
+        { label: "a", text: "Hồ Chí Minh nhấn mạnh đấu tranh quân sự và chính trị ở miền Nam là nhân tố quyết định thắng lợi trong kháng chiến chống Mỹ.", ans: true },
+        { label: "b", text: "Hồ Chí Minh cho rằng chỉ cần tập trung vào mặt trận ngoại giao là đủ để đạt được thắng lợi trong kháng chiến chống Mỹ.", ans: false },
+        { label: "c", text: "Khi đàm phán quốc tế, cần phối hợp chặt chẽ giữa các thắng lợi quân sự với hoạt động ngoại giao để tối ưu hóa kết quả.", ans: true },
+        { label: "d", text: "Trong các cuộc đàm phán quốc tế hiện nay, việc tận dụng các thành tựu trên thực địa và khả năng quân sự là yếu tố then chốt để đạt lợi thế trong ngoại giao.", ans: true },
+      ]
+    },
+    {
+      source: "Hiệp định Paris (1973) kết thúc thắng lợi cuộc đấu tranh ngoại giao dài nhất, khó khăn nhất trong lịch sử ngoại giao nước ta ở TK XX; đánh dấu thắng lợi lịch sử của nhân dân ta sau hơn 19 năm đấu tranh kiên cường, bất khuất trên các mặt trận chính trị, quân sự, ngoại giao chống Mĩ xâm lược.",
+      items: [
+        { label: "a", text: "Hiệp định Pa-ri (1973) đánh dấu thắng lợi của cuộc đấu tranh ngoại giao lâu dài và khó khăn nhất trong lịch sử ngoại giao Việt Nam ở TK XX.", ans: true },
+        { label: "b", text: "Hiệp định Pa-ri chỉ là một thắng lợi về mặt quân sự mà không có ý nghĩa lớn về mặt ngoại giao.", ans: false },
+        { label: "c", text: "Thắng lợi ngoại giao trong Hiệp định Pa-ri là kết quả của sự phối hợp hiệu quả giữa đấu tranh chính trị, quân sự và ngoại giao.", ans: true },
+        { label: "d", text: "Thành công của Hiệp định Pa-ri cho thấy tầm quan trọng của sự kiên trì và chiến lược phối hợp toàn diện giữa các mặt trận.", ans: true },
+      ]
+    },
+  ]
+},
+
+// ---- BÀI 14 ----
+{
+  title: "Bài 14 – Hoạt động đối ngoại của Việt Nam từ năm 1975 đến nay",
+  mcq: [
+    { q: "Giai đoạn 1975–1985, Việt Nam thực hiện chính sách đối ngoại nào?", opts: ["Hợp tác toàn diện với các nước xã hội chủ nghĩa","Bình thường hóa quan hệ với Mỹ","Hợp tác toàn diện với các nước tư bản","Bình thường hóa quan hệ với Trung Quốc"], ans: 0 },
+    { q: "Một trong những chính sách đối ngoại của Việt Nam giai đoạn 1975–1985 là?", opts: ["Cải thiện quan hệ với các nước Đông Nam Á","Tăng cường quan hệ toàn diện với Trung Quốc","Đàm phán kết thúc chiến tranh với Mỹ","Nâng quan hệ với Nga lên đối tác chiến lược"], ans: 0 },
+    { q: "Giai đoạn 1975–1985, Việt Nam coi trọng phát triển quan hệ ngoại giao toàn diện với quốc gia nào?", opts: ["Liên Xô","Anh","Mỹ","Pháp"], ans: 0 },
+    { q: "Năm 1991, Việt Nam có hoạt động đối ngoại nổi bật nào?", opts: ["Việt Nam và Trung Quốc bình thường hóa quan hệ ngoại giao","Phát triển quan hệ đối tác chiến lược toàn diện với Nhật Bản","Việt Nam và Hoa Kỳ bình thường hóa quan hệ ngoại giao","Việt Nam gia nhập WTO"], ans: 0 },
+    { q: "Năm 1995, Việt Nam có hoạt động đối ngoại nổi bật nào?", opts: ["Việt Nam và Hoa Kỳ bình thường hóa quan hệ ngoại giao","Phát triển quan hệ đối tác chiến lược toàn diện với Ấn Độ","Việt Nam và Liên Xô ký Hiệp ước hữu nghị và hợp tác","Việt Nam gia nhập WTO"], ans: 0 },
+    { q: "Năm 1995, Việt Nam trở thành thành viên của tổ chức nào?", opts: ["Hiệp hội các quốc gia Đông Nam Á (ASEAN)","Liên minh chính trị – quân sự Vác-sa-va","Hội đồng tương trợ kinh tế (SEV)","Tổ chức Thương mại Thế giới (WTO)"], ans: 0 },
+    { q: "Trong thời kỳ Đổi mới (từ 12-1986), Việt Nam không ngừng củng cố mối quan hệ đặc biệt với quốc gia nào?", opts: ["Cu-ba","Thái Lan","In-đô-nê-xi-a","Ma-lai-xi-a"], ans: 0 },
+    { q: "Quốc gia nào có quan hệ đối tác chiến lược toàn diện với Việt Nam trong thời kì Đổi mới?", opts: ["Ấn Độ","Anh","Pháp","Ma-lai-xi-a"], ans: 0 },
+    { q: "Bối cảnh hoạt động đối ngoại của Việt Nam thời kì 1975–1985 là gì?", opts: ["Việt Nam đã hoàn toàn thống nhất về lãnh thổ","Thế bao vây, cấm vận Việt Nam đã được dỡ bỏ","Cuộc kháng chiến chống Mỹ diễn ra quyết liệt","Miền Bắc xây dựng thành công chủ nghĩa xã hội"], ans: 0 },
+    { q: "Từ năm 1986, hoạt động đối ngoại của Việt Nam diễn ra trong bối cảnh nào?", opts: ["Xu thế khu vực hóa, toàn cầu hóa đã phát triển","Thế bao vây, cấm vận Việt Nam đã được dỡ bỏ","Cuộc Chiến tranh lạnh đã chấm dứt hoàn toàn","Cuộc kháng chiến chống Mỹ diễn ra quyết liệt"], ans: 0 },
+    { q: "Hoạt động đối ngoại thời kì Đổi mới KHÔNG có tác động nào?", opts: ["Bước đầu thiết lập quan hệ với cách mạng thế giới","Nâng cao vị thế của Việt Nam trên trường quốc tế","Bảo vệ vững chắc chủ quyền lãnh thổ Tổ quốc","Thúc đẩy phát triển kinh tế, văn hóa và xã hội"], ans: 0 },
+    { q: "Đường lối đối ngoại của Việt Nam trong thời kỳ Đổi mới là gì?", opts: ["Kết hợp sức mạnh dân tộc với sức mạnh thời đại","Liên minh quân sự với các nước trong khu vực","Kết hợp sức mạnh thời đại với sức mạnh khu vực","Liên minh chính trị với các nước Đông Nam Á"], ans: 0 },
+    { q: "Đại hội VII (1991) nhấn mạnh nguyên tắc nào trong quan hệ quốc tế?", opts: ["Cùng tồn tại hòa bình, hợp tác bình đẳng và cùng có lợi không phân biệt chế độ","Hợp tác quốc tế chỉ với các nước xã hội chủ nghĩa","Ưu tiên đối tác chiến lược với các nước có hệ thống chính trị tương đồng","Chỉ hợp tác với các nước kinh tế mạnh"], ans: 0 },
+    { q: "Quan điểm đường lối đối ngoại của Việt Nam trong xu thế hội nhập hiện nay là?", opts: ["Không chọn bên, mà chọn công lý và lẽ phải","Chọn đối tác, không chọn đối tượng hợp tác","Không láng giềng gần, mà chọn bạn ở xa","Chọn bên, chọn đối tác và công lý, lẽ phải"], ans: 0 },
+  ],
+  tf: [
+    {
+      source: "Đường lối đối ngoại: 'độc lập, tự chủ, hòa bình, hữu nghị, hợp tác và phát triển, đa phương hóa, đa dạng hóa quan hệ đối ngoại'; 'là bạn, là đối tác tin cậy và là thành viên tích cực, có trách nhiệm trong cộng đồng quốc tế'; phối hợp chặt chẽ giữa đối ngoại đảng, ngoại giao nhà nước và đối ngoại nhân dân. (Văn kiện Đại hội XIII)",
+      items: [
+        { label: "a", text: "Trụ cột trong hoạt động đối ngoại của Việt Nam hiện nay là đối ngoại đảng, ngoại giao nhà nước và đối ngoại nhân dân.", ans: true },
+        { label: "b", text: "Kiên định về nguyên tắc, mục tiêu trong hoạt động đối ngoại là kiên định về chủ trương 'độc lập, tự chủ, hòa bình, hữu nghị, hợp tác và phát triển'.", ans: true },
+        { label: "c", text: "Đường lối đối ngoại của Việt Nam chỉ tập trung vào việc đa phương hóa các mối quan hệ với các nước lớn, không chú trọng đến các nước láng giềng và khu vực.", ans: false },
+        { label: "d", text: "Sự phối hợp nhịp nhàng giữa đối ngoại đảng, ngoại giao nhà nước và đối ngoại nhân dân là yếu tố then chốt giúp Việt Nam thích ứng linh hoạt trước những thay đổi quốc tế.", ans: true },
+      ]
+    },
+    {
+      source: "Cố Tổng Bí thư Nguyễn Phú Trọng: 'Đất nước ta có trường phái ngoại giao riêng biệt, đặc sắc và độc đáo, đó là trường phái ngoại giao cây tre. Cây tre Việt Nam có gốc vững chắc, cành uyển chuyển, mềm dẻo nhưng rất kiên cường, không có cơn gió nào quật ngã được.'",
+      items: [
+        { label: "a", text: "Đường lối ngoại giao 'bản sắc Cây tre Việt Nam' có ý nghĩa là 'vững gốc, chắc thân, cành uyển chuyển'.", ans: true },
+        { label: "b", text: "Cứng rắn về nguyên tắc, mềm dẻo về sách lược trong hoạt động ngoại giao của Việt Nam là không còn phù hợp trong xu thế hội nhập hiện nay.", ans: false },
+        { label: "c", text: "Lựa chọn đối tác phù hợp để liên minh phòng thủ quốc gia là nhân tố không thể thiếu trong hoạt động ngoại giao hiện nay của Việt Nam.", ans: false },
+        { label: "d", text: "Trường phái ngoại giao 'Cây tre Việt Nam' đòi hỏi Việt Nam phải linh hoạt và khéo léo trong việc xử lý các mối quan hệ quốc tế, bảo vệ lợi ích quốc gia mà vẫn giữ vững độc lập, tự chủ.", ans: true },
+      ]
+    },
+  ]
+},
+
+// ---- BÀI 15 ----
+{
+  title: "Bài 15 – Khái quát cuộc đời và sự nghiệp của Hồ Chí Minh",
+  mcq: [
+    { q: "Một trong những phẩm chất tốt đẹp của xứ Nghệ được Hồ Chí Minh tiếp thu rõ nét là?", opts: ["Ý chí trong học tập","Trọng nghĩa khinh tài","Giỏi nghề thủ công","Kinh nghiệm đi biển"], ans: 0 },
+    { q: "Một trong những ngôi trường Hồ Chí Minh từng theo học là?", opts: ["Quốc học Huế","Hoàng Phố","Quốc Tử giám","Đồng Khánh"], ans: 0 },
+    { q: "Tháng 6-1925, Nguyễn Ái Quốc thành lập Hội Việt Nam Cách mạng Thanh niên khi đang hoạt động ở đâu?", opts: ["Trung Quốc","Pháp","Liên Xô","Việt Nam"], ans: 0 },
+    { q: "Tại Pháp (1917–1923), Nguyễn Ái Quốc có hoạt động nào?", opts: ["Tham gia sáng lập Hội Liên hiệp các dân tộc thuộc địa","Tham dự Đại hội V của Quốc tế Cộng sản","Soạn thảo Cương lĩnh chính trị đầu tiên của Đảng","Chủ trì hội nghị hợp nhất các tổ chức cộng sản"], ans: 0 },
+    { q: "Đầu năm 1930, Nguyễn Ái Quốc đã làm gì?", opts: ["Hợp nhất các tổ chức cộng sản","Thành lập Mặt trận Việt Minh","Soạn thảo Luận cương chính trị","Trở về nước lãnh đạo cách mạng"], ans: 0 },
+    { q: "Tổ chức nào được thành lập theo quyết định của Hội nghị TW Đảng lần 8 (5-1941) do Nguyễn Ái Quốc chủ trì?", opts: ["Việt Nam Độc lập Đồng minh","Đảng Lao động Việt Nam","Tân Việt Cách mạng đảng","Mặt trận Dân chủ Đông Dương"], ans: 0 },
+    { q: "Ngày 22-12-1944, lực lượng vũ trang nào được thành lập theo Chỉ thị của Hồ Chí Minh?", opts: ["Đội Việt Nam Tuyên truyền Giải phóng quân","Mặt trận Dân tộc Giải phóng miền Nam","Quân đội nhân dân Việt Nam","Đội Việt Nam Giải phóng quân"], ans: 0 },
+    { q: "Năm 1945, Nguyễn Ái Quốc có hoạt động nào?", opts: ["Phát động và lãnh đạo Tổng khởi nghĩa giành chính quyền","Lãnh đạo kháng chiến chống Pháp và Mỹ","Xây dựng và hoàn thiện đường lối giải phóng dân tộc","Triệu tập hội nghị hợp nhất các tổ chức cộng sản"], ans: 0 },
+    { q: "Hoàn cảnh đất nước cuối TK XIX ảnh hưởng đến Hồ Chí Minh là?", opts: ["Thực dân Pháp đã đặt được ách cai trị trên toàn lãnh thổ Việt Nam","Phong trào đấu tranh theo khuynh hướng vô sản diễn ra rộng khắp","Cách mạng Việt Nam đi theo con đường cách mạng vô sản","Thực dân Pháp hoàn thành cuộc khai thác thuộc địa lần thứ nhất"], ans: 0 },
+    { q: "Hoàn cảnh gia đình ảnh hưởng đến cuộc đời và sự nghiệp Hồ Chí Minh là?", opts: ["Thân phụ là một tấm gương sáng về ý chí vượt khó","Thân mẫu từng thi đỗ cử nhân tại trường thi Nghệ An","Thân phụ là người khởi xướng phong trào Đông Du","Thân phụ đã từng tham gia cuộc vận động Duy tân"], ans: 0 },
+    { q: "Năm 1920, Nguyễn Ái Quốc tại Pháp đóng góp gì cho lịch sử dân tộc?", opts: ["Tìm ra con đường cứu nước theo khuynh hướng vô sản","Chủ trì hội nghị hợp nhất các tổ chức cộng sản","Thành lập Hội Việt Nam cách mạng thanh niên","Lãnh đạo cuộc khởi nghĩa vũ trang giành chính quyền"], ans: 0 },
+    { q: "Hoạt động của Nguyễn Tất Thành từ 1911–1920 để lại bài học gì?", opts: ["Tinh thần vượt khó, vượt khổ","Tinh thần đoàn kết quốc tế vô sản","Đấu tranh vũ trang giữ chính quyền","Hướng ngoại để lao động, học tập"], ans: 0 },
+  ],
+  tf: [
+    {
+      source: "Chủ tịch Hồ Chí Minh là Anh hùng giải phóng dân tộc của đất nước và nhân dân Việt Nam. Người là một nhà lãnh đạo vĩ đại với tầm nhìn xa, ý chí và sức mạnh kiên cường, tấm lòng nhân ái bao la. (Cảm tưởng khách quốc tế, khu di tích Chủ tịch Hồ Chí Minh tại phủ Chủ tịch)",
+      items: [
+        { label: "a", text: "Anh hùng giải phóng dân tộc được nhắc đến trong đoạn trích là Nguyễn Ái Quốc (tức Hồ Chí Minh).", ans: true },
+        { label: "b", text: "Một trong những công lao to lớn của Người là sáng lập ra Đảng Cộng sản Đông Dương.", ans: false },
+        { label: "c", text: "Việc tìm ra con đường cách mạng vô sản không phải là công lao đầu tiên và quan trọng nhất trong sự nghiệp giải phóng dân tộc của Hồ Chí Minh.", ans: false },
+        { label: "d", text: "Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh là việc làm được lan tỏa và mang lại hiệu quả tích cực trên nhiều lĩnh vực hiện nay.", ans: true },
+      ]
+    },
+    {
+      source: "Hồ Chủ tịch là tượng trưng cao đẹp của chủ nghĩa yêu nước chân chính kết hợp nhuần nhuyễn với chủ nghĩa quốc tế vô sản... Người là một chiến sĩ xuất sắc trong phong trào cộng sản quốc tế và phong trào giải phóng dân tộc của thế kỉ XX. (Điếu văn Lễ truy điệu Chủ tịch Hồ Chí Minh, 9-9-1969)",
+      items: [
+        { label: "a", text: "Điếu văn ca ngợi Chủ tịch Hồ Chí Minh trong Lễ truy điệu được tổ chức tại Hà Nội sau khi Người từ trần năm 1969.", ans: true },
+        { label: "b", text: "Nội dung đoạn điếu văn cho thấy Chủ tịch Hồ Chí Minh có cống hiến to lớn đối với cách mạng Việt Nam và cách mạng thế giới.", ans: true },
+        { label: "c", text: "Chủ tịch Hồ Chí Minh có vị trí, vai trò đặc biệt đối với tiến trình lịch sử Việt Nam từ giữa thế kỉ XIX đến đầu thế kỉ XX.", ans: false },
+        { label: "d", text: "Phong trào cộng sản quốc tế hiện nay trên thế giới đang tiếp tục phát triển mạnh mẽ và có sự đoàn kết chặt chẽ.", ans: false },
+      ]
+    },
+  ]
+},
+
+// ---- BÀI 16 ----
+{
+  title: "Bài 16 – Hồ Chí Minh – Anh hùng giải phóng dân tộc",
+  mcq: [
+    { q: "Từ 1911–1930, Nguyễn Tất Thành KHÔNG đặt chân đến quốc gia nào?", opts: ["Nhật Bản","Trung Quốc","Liên Xô","Thái Lan"], ans: 0 },
+    { q: "Năm 1941, sau khi về nước, Nguyễn Ái Quốc đã chọn nơi nào để xây dựng căn cứ địa cách mạng?", opts: ["Cao Bằng","Tuyên Quang","Tân Trào","Lạng Sơn"], ans: 0 },
+    { q: "Tháng 6-1945, theo Chỉ thị của Hồ Chí Minh, căn cứ địa cách mạng nào được thành lập?", opts: ["Khu Giải phóng Việt Bắc","Căn cứ Bắc Sơn-Võ Nhai","Trung ương Cục miền Nam","Chiến khu D-Tây Ninh"], ans: 0 },
+    { q: "Trong những năm 1941–1945, Hồ Chí Minh có hoạt động nào?", opts: ["Chủ trì Đại hội Quốc dân họp ở Tân Trào (Tuyên Quang)","Ra lời kêu gọi toàn quốc kháng chiến chống Pháp","Ký với Pháp bản Hiệp định Sơ bộ","Sang Pháp vận động ngoại giao"], ans: 0 },
+    { q: "Để giải quyết nạn đói sau Cách mạng tháng Tám 1945, Hồ Chí Minh đã?", opts: ["Kêu gọi nhân dân 'nhường cơm sẻ áo'","Ký sắc lệnh thành lập Nha bình dân học vụ","Kêu gọi nhân dân ủng hộ Tuần lễ vàng","Gửi lời kêu gọi quốc dân đi bỏ phiếu"], ans: 0 },
+    { q: "Để giải quyết khó khăn về tài chính sau 1945, Hồ Chí Minh đã?", opts: ["Kêu gọi nhân dân ủng hộ Tuần lễ vàng","Kêu gọi nhân dân 'Nhường cơm sẻ áo'","Ký sắc lệnh thành lập Nha bình dân học vụ","Gửi lời kêu gọi quốc dân đi bỏ phiếu"], ans: 0 },
+    { q: "Để giải quyết nạn dốt sau 1945, Hồ Chí Minh đã?", opts: ["Ký sắc lệnh thành lập Nha bình dân học vụ","Kêu gọi nhân dân ủng hộ Tuần lễ vàng","Kêu gọi nhân dân 'Nhường cơm sẻ áo'","Gửi lời kêu gọi quốc dân đi bỏ phiếu"], ans: 0 },
+    { q: "Tháng 12-1946, khi mọi nhân nhượng với Pháp đã đến giới hạn, Hồ Chí Minh đã?", opts: ["Ra Lời kêu gọi toàn quốc kháng chiến","Ký với Pháp Hiệp định Sơ bộ","Phát động nhân dân Nam bộ kháng chiến","Sang Pháp để vận động ngoại giao"], ans: 0 },
+    { q: "Ý nghĩa của sự kiện Nguyễn Ái Quốc tìm ra con đường cứu nước năm 1920 là?", opts: ["Bước đầu giải quyết khủng hoảng về đường lối giải phóng dân tộc","Đưa cách mạng Việt Nam đi theo khuynh hướng tư sản","Mở ra con đường cứu nước theo khuynh hướng dân chủ vô sản","Chuẩn bị đủ điều kiện thành lập Đảng CS Đông Dương"], ans: 0 },
+    { q: "Vai trò của Nguyễn Ái Quốc trong công cuộc chuẩn bị giải phóng dân tộc (1941–1945) là?", opts: ["Thành lập mặt trận dân tộc thống nhất của riêng Việt Nam","Thống nhất các tổ chức cộng sản thành một đảng duy nhất","Xác định nhiệm vụ duy nhất của cách mạng tư sản dân quyền","Hoàn chỉnh lí luận cách mạng giải phóng dân tộc Việt Nam"], ans: 0 },
+    { q: "Nội dung thể hiện việc Nguyễn Ái Quốc chuẩn bị tư tưởng, chính trị cho sự ra đời của Đảng là?", opts: ["Mở các lớp huấn luyện, đào tạo cán bộ cách mạng tại Trung Quốc","Chủ nhiệm kiêm chủ bút báo Nhân đạo, Đời sống công nhân","Xây dựng lí luận về đi lên chủ nghĩa xã hội ở miền Bắc","Đào tạo cán bộ thực hiện các cuộc khởi nghĩa vũ trang"], ans: 0 },
+    { q: "Vai trò của Nguyễn Ái Quốc trong việc thành lập Đảng CS Việt Nam (1930) là?", opts: ["Triệu tập và chủ trì Hội nghị thành lập Đảng","Triệu tập hội nghị thống nhất các tổ chức cộng sản tại Cao Bằng","Soạn thảo Đường Kách mệnh – Cương lĩnh của Đảng","Triệu tập và chủ trì Đại hội thành lập Đảng tại Ma Cao"], ans: 0 },
+    { q: "Điểm sáng tạo của Nguyễn Ái Quốc trong chuẩn bị thành lập Đảng (những năm 20 TK XX) là?", opts: ["Xác định lực lượng cách mạng không chỉ có công – nông dân","Xác định công nhân là lực lượng lãnh đạo giải phóng dân tộc","Khẳng định sự cần thiết phải xây dựng đảng vô sản thống nhất","Xây dựng lí luận giải phóng giai cấp, tiến lên xã hội cộng sản"], ans: 0 },
+  ],
+  tf: [
+    {
+      source: "Luận cương của Lê-nin làm cho tôi rất cảm động, phấn khởi, sáng tỏ, tin tưởng biết bao!... Đây là cái cần thiết cho chúng ta, đây là con đường giải phóng chúng ta! Từ đó tôi hoàn toàn tin theo Lê-nin, tin theo Quốc tế thứ ba. (Hồ Chí Minh, Con đường dẫn tôi đến chủ nghĩa Mác-Lê-nin)",
+      items: [
+        { label: "a", text: "Đoạn tư liệu thể hiện cảm xúc của Nguyễn Ái Quốc khi đọc bản Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa của Lê-nin.", ans: true },
+        { label: "b", text: "Trong đoạn tư liệu, Nguyễn Ái Quốc khẳng định: muốn cứu nước và giải phóng dân tộc, không có con đường nào khác ngoài con đường cách mạng vô sản.", ans: true },
+        { label: "c", text: "Việc Nguyễn Ái Quốc tìm thấy con đường cứu nước đúng đắn đã chấm dứt hoàn toàn sự khủng hoảng về đường lối cứu nước và giai cấp lãnh đạo cách mạng Việt Nam.", ans: false },
+        { label: "d", text: "Việc hoàn toàn tin theo Lê-nin đã định hình tư tưởng và chiến lược cách mạng của Hồ Chí Minh, tạo nền tảng cho sự lãnh đạo phong trào giải phóng dân tộc Việt Nam.", ans: true },
+      ]
+    },
+    {
+      source: "Chiến tranh có thể kéo dài 5 năm, 10 năm, 20 năm hoặc lâu hơn nữa. Hà Nội, Hải Phòng và một số thành phố, xí nghiệp có thể bị tàn phá, song nhân dân Việt Nam quyết không sợ! Không có gì quý hơn độc lập, tự do. (Hồ Chí Minh, Lời kêu gọi toàn quốc chống Mỹ, 17-7-1966)",
+      items: [
+        { label: "a", text: "Lời kêu gọi cho thấy Hồ Chí Minh tin tưởng vào thắng lợi của cuộc kháng chiến chống Mỹ.", ans: true },
+        { label: "b", text: "Đoạn tư liệu thể hiện mong muốn của Hồ Chí Minh khi Mỹ chấm dứt chiến tranh phá hoại miền Bắc.", ans: false },
+        { label: "c", text: "Đoạn tư liệu thể hiện quyết tâm của nhân dân Việt Nam trong cuộc kháng chiến chống Mỹ.", ans: true },
+        { label: "d", text: "Lời kêu gọi là một văn kiện lịch sử, có giá trị như lời hịch kêu gọi cả nước tấn công quân Mỹ.", ans: false },
+      ]
+    },
+  ]
+}
+];
+
+// ============================================================
+// SHUFFLE HELPERS
+// ============================================================
+let shuffleMode = false;
+// shuffleMap[li][qi] = { qOrder: [...], optOrder: [...] }
+// qOrder: shuffled indices of mcq questions for lesson li
+// optOrder[qi]: shuffled option indices for question qi
+let shuffleMap = {};
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildShuffleMap() {
+  shuffleMap = {};
+  lessons.forEach((lesson, li) => {
+    const qOrder = shuffleArray(lesson.mcq.map((_, i) => i));
+    const optOrder = {};
+    lesson.mcq.forEach((q, qi) => {
+      optOrder[qi] = shuffleArray(q.opts.map((_, i) => i));
+    });
+    shuffleMap[li] = { qOrder, optOrder };
+  });
+}
+
+function toggleShuffle() {
+  shuffleMode = !shuffleMode;
+  const btn = document.getElementById('shuffle-btn');
+  if (shuffleMode) {
+    btn.classList.add('on');
+    btn.textContent = '🔀 Ngẫu nhiên  ✓';
+    buildShuffleMap();
+  } else {
+    btn.classList.remove('on');
+    btn.textContent = '🔀 Ngẫu nhiên';
+  }
+  // Reset state and re-render so shuffle applies cleanly
+  state = {};
+  updateScoreBar();
+  render();
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {};
+// state[lessonIdx][type][idx] = { answered, correct }
+// For MCQ in shuffle mode, idx is the ORIGINAL question index (stable key)
+
+function getKey(lesson, type, idx) { return `${lesson}_${type}_${idx}`; }
+
+function initState() {
+  state = {};
+  shuffleMode = false;
+  const btn = document.getElementById('shuffle-btn');
+  if (btn) { btn.classList.remove('on'); btn.textContent = '🔀 Ngẫu nhiên'; }
+  updateScoreBar();
+}
+
+function answered(lessonIdx, type, idx) {
+  return !!state[getKey(lessonIdx, type, idx)];
+}
+
+function isCorrect(lessonIdx, type, idx) {
+  return state[getKey(lessonIdx, type, idx)]?.correct;
+}
+
+function record(lessonIdx, type, idx, correct) {
+  const k = getKey(lessonIdx, type, idx);
+  if (!state[k]) {
+    state[k] = { correct };
+    updateScoreBar();
+  }
+}
+
+function totalItems() {
+  let t = 0;
+  lessons.forEach(l => {
+    t += l.mcq.length;
+    l.tf.forEach(q => { t += q.items.length; });
+  });
+  return t;
+}
+
+function answeredItems() {
+  return Object.keys(state).length;
+}
+
+function correctItems() {
+  return Object.values(state).filter(v => v.correct).length;
+}
+
+function updateScoreBar() {
+  const total = totalItems();
+  const done = answeredItems();
+  const correct = correctItems();
+  document.getElementById('score-label').textContent = `${correct} / ${done} đúng`;
+  const pct = total ? (done / total * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+let currentLesson = 0;
+
+function render() {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  lessons.forEach((lesson, li) => {
+    const panel = document.createElement('div');
+    panel.className = 'lesson-panel' + (li === currentLesson ? ' active' : '');
+    panel.id = `lesson-${li}`;
+
+    // MCQ section
+    const mcqTitle = document.createElement('div');
+    mcqTitle.className = 'section-title';
+    mcqTitle.textContent = 'Trắc nghiệm nhiều lựa chọn';
+    if (shuffleMode) {
+      const badge = document.createElement('span');
+      badge.className = 'shuffle-badge';
+      badge.textContent = 'NGẪU NHIÊN';
+      mcqTitle.appendChild(badge);
+    }
+    panel.appendChild(mcqTitle);
+
+    // Determine question order
+    const qOrder = (shuffleMode && shuffleMap[li])
+      ? shuffleMap[li].qOrder
+      : lesson.mcq.map((_, i) => i);
+
+    qOrder.forEach((origQi, displayIdx) => {
+      const q = lesson.mcq[origQi];
+      // Determine option order
+      const optOrder = (shuffleMode && shuffleMap[li])
+        ? shuffleMap[li].optOrder[origQi]
+        : q.opts.map((_, i) => i);
+      panel.appendChild(buildMCQ(li, origQi, displayIdx, q, optOrder));
+    });
+
+    // TF section
+    if (lesson.tf.length > 0) {
+      const tfTitle = document.createElement('div');
+      tfTitle.className = 'section-title';
+      tfTitle.textContent = 'Trắc nghiệm đúng – sai';
+      panel.appendChild(tfTitle);
+
+      lesson.tf.forEach((tfq, ti) => {
+        panel.appendChild(buildTF(li, ti, tfq));
+      });
+    }
+
+    main.appendChild(panel);
+  });
+}
+
+function buildMCQ(li, origQi, displayIdx, q, optOrder) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.style.animationDelay = (displayIdx * 0.04) + 's';
+  card.id = `mcq-${li}-${origQi}`;
+
+  const header = document.createElement('div');
+  header.className = 'q-header';
+
+  const num = document.createElement('div');
+  num.className = 'q-num';
+  num.textContent = displayIdx + 1;
+
+  const text = document.createElement('div');
+  text.className = 'q-text';
+  text.textContent = q.q;
+
+  header.appendChild(num);
+  header.appendChild(text);
+  card.appendChild(header);
+
+  const opts = document.createElement('div');
+  opts.className = 'q-options';
+
+  // optOrder is array of original option indices in display order
+  // We need to find: what display position does the correct answer (q.ans) appear at?
+  const correctDisplayPos = optOrder.indexOf(q.ans);
+
+  optOrder.forEach((origOi, displayOi) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = String.fromCharCode(65 + displayOi) + '. ' + q.opts[origOi];
+    btn.dataset.origOi = origOi;
+
+    // onclick: pass the DISPLAY position of correct answer
+    btn.onclick = () => handleMCQ(li, origQi, displayOi, correctDisplayPos, card, origOi, q.ans);
+
+    if (answered(li, 'mcq', origQi)) {
+      btn.disabled = true;
+      // Highlight correct option in display
+      if (origOi === q.ans) btn.classList.add('correct');
+      // Highlight wrong pick
+      if (!isCorrect(li, 'mcq', origQi) && state[getKey(li,'mcq',origQi)]?.picked === origOi) {
+        btn.classList.add('wrong');
+      }
+    }
+    opts.appendChild(btn);
+  });
+
+  card.appendChild(opts);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback';
+  if (answered(li, 'mcq', origQi)) {
+    fb.classList.add('show');
+    if (isCorrect(li, 'mcq', origQi)) {
+      fb.classList.add('ok');
+      fb.textContent = '✓ Chính xác!';
+    } else {
+      const correctLetter = String.fromCharCode(65 + correctDisplayPos);
+      fb.classList.add('bad');
+      fb.textContent = `✗ Sai rồi! Đáp án đúng là: ${correctLetter}. ${q.opts[q.ans]}`;
+    }
+  }
+  card.appendChild(fb);
+
+  return card;
+}
+
+function handleMCQ(li, origQi, chosenDisplayPos, correctDisplayPos, card, chosenOrigOi, correctOrigOi) {
+  if (answered(li, 'mcq', origQi)) return;
+  const isRight = chosenOrigOi === correctOrigOi;
+  // Store picked original option index for re-render highlight
+  state[getKey(li, 'mcq', origQi)] = { correct: isRight, picked: chosenOrigOi };
+  updateScoreBar();
+
+  const btns = card.querySelectorAll('.opt-btn');
+  btns.forEach((btn) => {
+    btn.disabled = true;
+    const origOi = parseInt(btn.dataset.origOi);
+    if (origOi === correctOrigOi) btn.classList.add('correct');
+    else if (origOi === chosenOrigOi && !isRight) btn.classList.add('wrong');
+  });
+
+  const fb = card.querySelector('.feedback');
+  fb.classList.add('show');
+  if (isRight) {
+    fb.classList.add('ok');
+    fb.textContent = '✓ Chính xác!';
+  } else {
+    const correctLetter = String.fromCharCode(65 + correctDisplayPos);
+    fb.classList.add('bad');
+    fb.textContent = `✗ Sai rồi! Đáp án đúng là: ${correctLetter}.`;
+  }
+}
+
+function buildTF(li, ti, tfq) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.style.animationDelay = (ti * 0.06) + 's';
+  card.id = `tf-${li}-${ti}`;
+
+  const header = document.createElement('div');
+  header.className = 'q-header';
+  const num = document.createElement('div');
+  num.className = 'q-num';
+  num.textContent = 'TL';
+  num.style.background = '#5d4037';
+  const text = document.createElement('div');
+  text.className = 'q-text';
+  text.textContent = `Câu hỏi đúng – sai ${ti + 1}`;
+  header.appendChild(num);
+  header.appendChild(text);
+  card.appendChild(header);
+
+  const src = document.createElement('div');
+  src.className = 'q-source';
+  src.textContent = tfq.source;
+  card.appendChild(src);
+
+  const list = document.createElement('div');
+  list.className = 'tf-list';
+
+  tfq.items.forEach((item, ii) => {
+    const row = document.createElement('div');
+    row.className = 'tf-item';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'tf-label';
+    lbl.textContent = item.label + ')';
+
+    const right = document.createElement('div');
+    right.style.flex = '1';
+
+    const txt = document.createElement('div');
+    txt.className = 'tf-text';
+    txt.textContent = item.text;
+
+    const btns = document.createElement('div');
+    btns.className = 'tf-btns';
+
+    const dBtn = document.createElement('button');
+    dBtn.className = 'tf-btn dung';
+    dBtn.textContent = '✓ Đúng';
+
+    const sBtn = document.createElement('button');
+    sBtn.className = 'tf-btn sai';
+    sBtn.textContent = '✗ Sai';
+
+    const result = document.createElement('div');
+    result.className = 'tf-result';
+
+    const stateKey = `tf_${ti}_${ii}`;
+    if (answered(li, stateKey, 0)) {
+      dBtn.disabled = true;
+      sBtn.disabled = true;
+      const wasRight = isCorrect(li, stateKey, 0);
+      if (item.ans) {
+        dBtn.classList.add('selected-correct');
+        if (!wasRight) { sBtn.classList.add('selected-wrong-pick'); }
+      } else {
+        sBtn.classList.add('selected-correct');
+        if (!wasRight) { dBtn.classList.add('selected-wrong-pick'); }
+      }
+      result.className = 'tf-result ' + (wasRight ? 'ok' : 'bad');
+      result.textContent = wasRight ? '✓ Đúng!' : ('✗ Sai! Đáp án: ' + (item.ans ? 'Đúng' : 'Sai'));
+    }
+
+    dBtn.onclick = () => handleTF(li, ti, ii, true, item.ans, dBtn, sBtn, result);
+    sBtn.onclick = () => handleTF(li, ti, ii, false, item.ans, dBtn, sBtn, result);
+
+    btns.appendChild(dBtn);
+    btns.appendChild(sBtn);
+
+    right.appendChild(txt);
+    right.appendChild(btns);
+    right.appendChild(result);
+
+    row.appendChild(lbl);
+    row.appendChild(right);
+    list.appendChild(row);
+  });
+
+  card.appendChild(list);
+  return card;
+}
+
+function handleTF(li, ti, ii, chosen, correct, dBtn, sBtn, result) {
+  const stateKey = `tf_${ti}_${ii}`;
+  if (answered(li, stateKey, 0)) return;
+  const isRight = chosen === correct;
+  record(li, stateKey, 0, isRight);
+
+  dBtn.disabled = true;
+  sBtn.disabled = true;
+
+  if (correct) { dBtn.classList.add('show-correct'); }
+  else { sBtn.classList.add('show-correct'); }
+
+  if (!isRight) {
+    if (chosen) dBtn.classList.add('selected-wrong-pick');
+    else sBtn.classList.add('selected-wrong-pick');
+  }
+
+  result.className = 'tf-result ' + (isRight ? 'ok' : 'bad');
+  result.textContent = isRight ? '✓ Đúng!' : ('✗ Sai! Đáp án: ' + (correct ? 'Đúng' : 'Sai'));
+}
+
+// ============================================================
+// TAB / RESET
+// ============================================================
+function switchLesson(idx) {
+  currentLesson = idx;
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.lesson-panel').forEach((panel, i) => {
+    panel.classList.toggle('active', i === idx);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetAll() {
+  if (!confirm('Bạn có chắc muốn làm lại tất cả câu hỏi không?')) return;
+  shuffleMap = {};
+  initState();
+  render();
+  switchLesson(0);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+initState();
+render();
+</script>
+</body>
+</html>
